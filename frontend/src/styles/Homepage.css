@@ -61,28 +61,6 @@
   z-index: 1;
 }
 
-.hero-metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-metrics div {
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: #f9fbf9;
-}
-
-.hero-metrics strong {
-  display: block;
-  font-size: 1.2rem;
-  color: var(--ink);
-}
-
 
 .feature-section {
   display: flex;

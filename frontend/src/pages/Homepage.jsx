@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Homepage.css';
 
 function Homepage() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="homepage">
       <section className="hero-section">
@@ -11,28 +14,18 @@ function Homepage() {
             Price your desk setup before you buy.
             <span className="hero-highlight"> One cart. Every store.</span>
           </h1>
-          <p>
-            CleanCart checks keyboards, mice, headsets, docks and more across every partner store.
-            See who has stock, delivery fees, and the lowest total before you check out.
-          </p>
-          <div className="hero-actions">
-            <Link to="/products" className="btn btn-primary">Build my cart</Link>
-            <Link to="/about" className="btn btn-outline">How it works</Link>
-          </div>
-          <div className="hero-metrics">
-            <div>
-              <strong>5,000+</strong>
-              <span>Accessories tracked</span>
-            </div>
-            <div>
-              <strong>Multi-store</strong>
-              <span>Availability & fees</span>
-            </div>
-            <div>
-              <strong>Smart totals</strong>
-              <span>Cart-wide math done</span>
-            </div>
-          </div>
+          {!isAuthenticated && (
+            <>
+              <p>
+                CleanCart checks keyboards, mice, headsets, docks and more across every partner store.
+                See who has stock, delivery fees, and the lowest total before you check out.
+              </p>
+              <div className="hero-actions">
+                <Link to="/products" className="btn btn-primary">Build my cart</Link>
+                <Link to="/about" className="btn btn-outline">How it works</Link>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -59,11 +52,6 @@ function Homepage() {
             <div className="feature-icon">🚚</div>
             <h3>Delivery clarity</h3>
             <p>Get store logos, ETA, and delivery charges up front. Out-of-stock items are clearly flagged.</p>
-          </div>
-          <div className="feature-card card">
-            <div className="feature-icon">🛡️</div>
-            <h3>Admin control</h3>
-            <p>Checked-out carts surface instantly in the admin dashboard for review and fulfillment.</p>
           </div>
         </div>
       </section>
