@@ -14,8 +14,25 @@ function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  const getPasswordStrength = (pwd) => {
+    let strength = 0;
+    if (pwd.length >= 8) strength++;
+    if (/[A-Z]/.test(pwd)) strength++;
+    if (/[0-9]/.test(pwd)) strength++;
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd)) strength++;
+    return strength;
+  };
+
+  const passwordChecks = {
+    length: formData.password.length >= 8,
+    uppercase: /[A-Z]/.test(formData.password),
+    number: /[0-9]/.test(formData.password),
+    symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password)
+  };
 
   // Redirect to dashboard if already logged in
   useEffect(() => {
@@ -25,10 +42,14 @@ function Register() {
   }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    if (name === 'password') {
+      setPasswordStrength(getPasswordStrength(value));
+    }
     setError(''); // Clear error when user types
   };
 
@@ -37,14 +58,15 @@ function Register() {
     setError('');
     setSuccess(false);
 
-    // Client-side validation
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+    // Client-side validation - check password strength
+    const strength = getPasswordStrength(formData.password);
+    if (strength < 4) {
+      setError('Password must contain at least 8 characters, 1 uppercase letter, 1 number, and 1 symbol');
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -62,6 +84,7 @@ function Register() {
         password: '',
         confirmPassword: ''
       });
+      setPasswordStrength(0);
     } catch (err) {
       console.error('Registration error:', err);
       
@@ -124,6 +147,33 @@ function Register() {
               placeholder="Create a password"
               disabled={success}
             />
+            {formData.password && (
+              <>
+                <div className="strength-bar">
+                  <div className={`strength-fill strength-${passwordStrength}`} />
+                </div>
+                <p className={`strength-text strength-text-${passwordStrength}`}>
+                  {passwordStrength === 1 && 'Weak'}
+                  {passwordStrength === 2 && 'Weak'}
+                  {passwordStrength === 3 && 'Medium'}
+                  {passwordStrength === 4 && 'Strong'}
+                </p>
+                <div className="password-checks">
+                  <div className={`check-item ${passwordChecks.length ? 'pass' : ''}`}>
+                    <span className="check-icon">✓</span> At least 8 characters
+                  </div>
+                  <div className={`check-item ${passwordChecks.uppercase ? 'pass' : ''}`}>
+                    <span className="check-icon">✓</span> At least 1 capital letter
+                  </div>
+                  <div className={`check-item ${passwordChecks.number ? 'pass' : ''}`}>
+                    <span className="check-icon">✓</span> At least 1 number
+                  </div>
+                  <div className={`check-item ${passwordChecks.symbol ? 'pass' : ''}`}>
+                    <span className="check-icon">✓</span> At least 1 symbol (!@#$% etc)
+                  </div>
+                </div>
+              </>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirm Password</label>

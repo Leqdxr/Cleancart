@@ -18,6 +18,7 @@ function Products() {
   const [showCheckout, setShowCheckout] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [expandedStore, setExpandedStore] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const categories = useMemo(() => ['All', ...new Set(products.map((p) => p.category))], [products]);
 
@@ -77,10 +78,15 @@ function Products() {
     if (!selectedStoreId) return;
     checkoutCart({ user, storeId: selectedStoreId, address: shipping, paymentMethod: payment.method, paymentNote: payment.note });
     setShowCheckout(false);
+    setShowSuccessModal(true);
     setShipping({ name: '', email: '', phone: '', address: '', city: '', zip: '' });
     setPayment({ method: 'card', note: '' });
     setSelectedStoreId('');
     setActiveStep(0);
+    setTimeout(() => {
+      setShowSuccessModal(false);
+      navigate('/dashboard');
+    }, 3000);
   };
 
   if (!isAuthenticated) {
@@ -363,6 +369,16 @@ function Products() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showSuccessModal && (
+        <div className="success-modal-backdrop">
+          <div className="success-modal-content">
+            <div className="success-checkmark">✓</div>
+            <h2>Order Placed Successfully</h2>
+            <p>Your order has been confirmed. Redirecting to your dashboard...</p>
           </div>
         </div>
       )}

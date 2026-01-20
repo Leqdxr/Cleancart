@@ -8,6 +8,7 @@ function Dashboard() {
   const { user, isAuthenticated } = useAuth();
   const { orders, updateOrderStatus, deleteOrder } = useCart();
   const [showOrderDetails, setShowOrderDetails] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   if (!isAuthenticated) {
     return (
@@ -44,6 +45,15 @@ function Dashboard() {
 
   const statusOptions = ['Pending', 'Scanned', 'Fulfilled'];
   const [editingStatusId, setEditingStatusId] = useState(null);
+
+  const handleDeleteClick = (orderId) => {
+    setConfirmDelete(orderId);
+  };
+
+  const handleConfirmDelete = (orderId) => {
+    deleteOrder(orderId);
+    setConfirmDelete(null);
+  };
 
   const renderOrderDetails = (order) => {
     if (!order || !order.address) return null;
@@ -194,8 +204,8 @@ function Dashboard() {
                   </div>
                 )}
                 {!isAdmin && (
-                  <button className="btn btn-text btn-danger" onClick={() => deleteOrder(order.id)}>
-                    Delete
+                  <button className="btn btn-text btn-danger" onClick={() => handleDeleteClick(order.id)}>
+                    Cancel
                   </button>
                 )}
               </div>
@@ -234,7 +244,7 @@ function Dashboard() {
                   </button>
                 )}
                 <div className="actions">
-                  <button className="btn btn-text btn-danger" onClick={() => deleteOrder(order.id)}>
+                  <button className="btn btn-text btn-danger" onClick={() => handleDeleteClick(order.id)}>
                     Delete
                   </button>
                 </div>
@@ -244,7 +254,25 @@ function Dashboard() {
         </div>
       )}
 
-      {showOrderDetails && renderOrderDetails(myOrders.find((o) => o.id === showOrderDetails))}    </div>
+      {showOrderDetails && renderOrderDetails(myOrders.find((o) => o.id === showOrderDetails))}
+
+      {confirmDelete && (
+        <div className="confirmation-modal-backdrop" onClick={() => setConfirmDelete(null)}>
+          <div className="confirmation-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Confirm {isAdmin ? 'Delete' : 'Cancellation'}</h3>
+            <p>Are you sure you want to {isAdmin ? 'delete' : 'cancel'} this order? This action cannot be undone.</p>
+            <div className="confirmation-actions">
+              <button className="btn btn-outline" onClick={() => setConfirmDelete(null)}>
+                No, keep it
+              </button>
+              <button className="btn btn-danger" onClick={() => handleConfirmDelete(confirmDelete)}>
+                Yes, {isAdmin ? 'delete' : 'cancel'} it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

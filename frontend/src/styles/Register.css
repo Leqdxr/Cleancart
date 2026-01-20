@@ -154,3 +154,95 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+.strength-bar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.4rem 0;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.strength-fill.strength-1,
+.strength-fill.strength-2 {
+  width: 33%;
+  background: #ef4444;
+}
+
+.strength-fill.strength-3 {
+  width: 66%;
+  background: #f59e0b;
+}
+
+.strength-fill.strength-4 {
+  width: 100%;
+  background: #10b981;
+}
+
+.strength-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin: 0.2rem 0 0.5rem 0;
+}
+
+.strength-text-1,
+.strength-text-2 {
+  color: #ef4444;
+}
+
+.strength-text-3 {
+  color: #f59e0b;
+}
+
+.strength-text-4 {
+  color: #10b981;
+}
+
+.password-checks {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.6rem 0;
+  padding: 0.8rem;
+  background: #f9fbf9;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #999;
+  transition: color 0.2s ease;
+}
+
+.check-item.pass {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.check-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.check-item.pass .check-icon {
+  opacity: 1;
+  background: #10b981;
+}
