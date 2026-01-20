@@ -81,8 +81,8 @@ function Register() {
     <div className="register-container">
       <div className="register-card">
         <Link to="/" className="back-button">← Back</Link>
-        <h1>Join Cleancart</h1>
-        <h2>Create Account</h2>
+        <h1>Create your account</h1>
+        <h2>Access the catalog</h2>
         {success && <div className="success-message">Registration successful! You may now login.</div>}
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit} className="register-form">

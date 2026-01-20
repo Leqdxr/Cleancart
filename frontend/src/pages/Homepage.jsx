@@ -5,52 +5,110 @@ function Homepage() {
   return (
     <div className="homepage">
       <section className="hero-section">
-        <div className="hero-content">
-          <h1 className="hero-title">Find the Best Prices with Cleancart</h1>
-          <p className="hero-subtitle">
-            Compare grocery prices across different stores in one place. 
-            Save time and money with our smart price comparison tool for grocery shopping.
+        <div className="hero-card card">
+          <div className="pill">Compare smarter</div>
+          <h1>
+            Price your desk setup before you buy.
+            <span className="hero-highlight"> One cart. Every store.</span>
+          </h1>
+          <p>
+            CleanCart checks keyboards, mice, headsets, docks and more across every partner store.
+            See who has stock, delivery fees, and the lowest total before you check out.
           </p>
-          <div className="hero-buttons">
-            <Link to="/products" className="btn btn-primary">Explore Products</Link>
-            <Link to="/register" className="btn btn-secondary">Get Started</Link>
+          <div className="hero-actions">
+            <Link to="/products" className="btn btn-primary">Build my cart</Link>
+            <Link to="/about" className="btn btn-outline">How it works</Link>
+          </div>
+          <div className="hero-metrics">
+            <div>
+              <strong>5,000+</strong>
+              <span>Accessories tracked</span>
+            </div>
+            <div>
+              <strong>Multi-store</strong>
+              <span>Availability & fees</span>
+            </div>
+            <div>
+              <strong>Smart totals</strong>
+              <span>Cart-wide math done</span>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="features-section">
-        <div className="container">
-          <h2 className="section-title">Why Choose Cleancart?</h2>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🔍</div>
-              <h3>Easy Comparison</h3>
-              <p>Compare grocery prices from different stores instantly in one place.</p>
+      <section className="feature-section">
+        <div className="section-head">
+          <div>
+            <p className="eyebrow">Built for builders, gamers, analysts</p>
+            <h2>Transparent pricing. No guessing.</h2>
+          </div>
+          <Link to="/products" className="btn btn-outline">Browse catalog</Link>
+        </div>
+        <div className="feature-grid">
+          <div className="feature-card card">
+            <div className="feature-icon">🔍</div>
+            <h3>Compare per store</h3>
+            <p>See store-by-store prices, delivery fees, and whether an item is available before you add to cart.</p>
+          </div>
+          <div className="feature-card card">
+            <div className="feature-icon">🛒</div>
+            <h3>Smart cart math</h3>
+            <p>We total your entire cart for each store, so bundles and accessories are already calculated.</p>
+          </div>
+          <div className="feature-card card">
+            <div className="feature-icon">🚚</div>
+            <h3>Delivery clarity</h3>
+            <p>Get store logos, ETA, and delivery charges up front. Out-of-stock items are clearly flagged.</p>
+          </div>
+          <div className="feature-card card">
+            <div className="feature-icon">🛡️</div>
+            <h3>Admin control</h3>
+            <p>Checked-out carts surface instantly in the admin dashboard for review and fulfillment.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="steps-section card">
+        <div className="section-head">
+          <p className="eyebrow">Three steps</p>
+          <h2>From search to checkout</h2>
+        </div>
+        <div className="steps-grid">
+          <div className="step-card">
+            <div className="step-index">1</div>
+            <div>
+              <h3>Create your account</h3>
+              <p>Register, log in, and unlock the product catalog with computer accessories.</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">💰</div>
-              <h3>Save Money</h3>
-              <p>Find the cheapest store for your entire cart and maximize your savings.</p>
+          </div>
+          <div className="step-card">
+            <div className="step-index">2</div>
+            <div>
+              <h3>Add items to cart</h3>
+              <p>Pick mice, keyboards, headsets, docks, and monitors. We track availability per store.</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">⚡</div>
-              <h3>Smart Cart Analysis</h3>
-              <p>Add items to your cart and see total costs calculated per store automatically.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h3>Clear Comparison</h3>
-              <p>View detailed comparison tables showing price differences and the best store choice.</p>
+          </div>
+          <div className="step-card">
+            <div className="step-index">3</div>
+            <div>
+              <h3>Checkout and compare</h3>
+              <p>See unique store totals, delivery fees, and stock visibility. Admin sees the order instantly.</p>
             </div>
           </div>
         </div>
       </section>
 
       <section className="cta-section">
-        <div className="container">
-          <h2>Ready to Start Saving?</h2>
-          <p>Join Cleancart today and start comparing prices like a pro!</p>
-          <Link to="/register" className="btn btn-primary btn-large">Sign Up Now</Link>
+        <div className="cta-card card">
+          <div>
+            <p className="eyebrow">Ready when you are</p>
+            <h2>Fast, clear, and reliable.</h2>
+            <p>Start with a couple of accessories, compare every store, and check out with confidence.</p>
+          </div>
+          <div className="cta-actions">
+            <Link to="/register" className="btn btn-primary">Create account</Link>
+            <Link to="/products" className="btn btn-outline">View products</Link>
+          </div>
         </div>
       </section>
     </div>
