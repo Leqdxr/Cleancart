@@ -96,10 +96,26 @@
   color: var(--green-700);
   font-weight: 700;
   border: 1px solid rgba(19, 167, 88, 0.2);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(19, 167, 88, 0.2);
+}
+
+.navbar-user:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
 }
 
 .user-icon {
   font-size: 1.1rem;
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .user-name {

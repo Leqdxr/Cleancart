@@ -12,7 +12,12 @@ function Navbar() {
     navigate('/');
   };
 
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   const isAdmin = user?.role === 'admin';
+  const avatar = user?.profilePicture;
 
   return (
     <nav className="navbar">
@@ -43,10 +48,14 @@ function Navbar() {
           <div className="navbar-cta">
             {isAuthenticated ? (
               <>
-                <div className="navbar-user">
-                  <span className="user-icon">{isAdmin ? '🛡️' : '👤'}</span>
+                <button type="button" className="navbar-user" onClick={handleProfileClick}>
+                  {avatar ? (
+                    <img src={avatar} alt="Profile" className="user-avatar" />
+                  ) : (
+                    <span className="user-icon">{isAdmin ? '🛡️' : '👤'}</span>
+                  )}
                   <span className="user-name">{user?.name || 'User'}</span>
-                </div>
+                </button>
                 <button onClick={handleLogout} className="btn btn-outline logout-btn">Logout</button>
               </>
             ) : (

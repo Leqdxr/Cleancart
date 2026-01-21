@@ -1,12 +1,9 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = 'your-secret-key-change-in-production';
+const { JWT_SECRET } = require('../config/constants');
 
 // Generate JWT token
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
-};
+const generateToken = (userId) => jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 
 // Register user
 exports.register = async (req, res) => {
@@ -48,7 +45,8 @@ exports.register = async (req, res) => {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        profilePicture: user.profilePicture || null
       }
     });
   } catch (error) {
@@ -109,7 +107,8 @@ exports.login = async (req, res) => {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        profilePicture: user.profilePicture || null
       }
     });
   } catch (error) {
@@ -125,5 +124,72 @@ exports.login = async (req, res) => {
       ? error.message 
       : 'Login failed. Please try again.';
     res.status(500).json({ error: errorMessage });
+  }
+};
+
+// Get current user profile
+exports.getProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    res.status(200).json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        profilePicture: user.profilePicture || null
+      }
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+};
+
+// Update profile (name, password, profile picture)
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    const { name, profilePicture, currentPassword, newPassword } = req.body;
+
+    if (name && !name.trim()) {
+      return res.status(400).json({ error: 'Name cannot be empty' });
+    }
+
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ error: 'Current password is required to set a new password' });
+      }
+      const isCurrentValid = await user.comparePassword(currentPassword);
+      if (!isCurrentValid) {
+        return res.status(401).json({ error: 'Current password is incorrect' });
+      }
+      if (newPassword.length < 6) {
+        return res.status(400).json({ error: 'New password must be at least 6 characters long' });
+      }
+      user.password = newPassword;
+    }
+
+    if (name) {
+      user.name = name.trim();
+    }
+
+    if (profilePicture !== undefined) {
+      user.profilePicture = profilePicture;
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        profilePicture: user.profilePicture || null
+      }
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
   }
 };
