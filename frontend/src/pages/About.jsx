@@ -1,3 +1,14 @@
+/**
+ * About Page Component
+ * 
+ * Informational page explaining CleanCart's purpose and features:
+ * - Product: Price comparison system for computer accessories
+ * - How It Works: 4-step process explanation
+ * - Mission: Making multi-store price comparison easy
+ * - Values: Simplicity, Usability, Clarity
+ * - Static content, no authentication required
+ */
+
 import '../styles/About.css';
 
 function About() {

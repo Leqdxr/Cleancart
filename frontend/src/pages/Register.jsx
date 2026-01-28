@@ -1,3 +1,16 @@
+/**
+ * User Registration Page Component
+ * 
+ * Provides new user registration with:
+ * - Name, email, and password collection
+ * - Real-time password strength indicator
+ * - Password validation requirements (8+ chars, uppercase, number, symbol)
+ * - Password confirmation matching
+ * - Success/error message display
+ * - Auto-redirect to dashboard if already authenticated
+ * - Link to login page for existing users
+ */
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/api';
@@ -5,28 +18,39 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/Register.css';
 
 function Register() {
+  // Form state for registration fields
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [error, setError] = useState(''); // Error message display
+  const [success, setSuccess] = useState(false); // Success state after registration
+  const [loading, setLoading] = useState(false); // Loading state during submission
+  const [passwordStrength, setPasswordStrength] = useState(0); // Password strength (0-4)
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  /**
+   * Calculate password strength score (0-4)
+   * Checks for: length (8+), uppercase, number, symbol
+   * @param {string} pwd - Password to evaluate
+   * @returns {number} Strength score 0-4
+   */
   const getPasswordStrength = (pwd) => {
     let strength = 0;
-    if (pwd.length >= 8) strength++;
-    if (/[A-Z]/.test(pwd)) strength++;
-    if (/[0-9]/.test(pwd)) strength++;
-    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd)) strength++;
+    if (pwd.length >= 8) strength++; // Minimum length
+    if (/[A-Z]/.test(pwd)) strength++; // Has uppercase
+    if (/[0-9]/.test(pwd)) strength++; // Has number
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd)) strength++; // Has symbol
     return strength;
   };
 
+  /**
+   * Individual password requirement checks
+   * Used to show checkmarks for each requirement
+   */
   const passwordChecks = {
     length: formData.password.length >= 8,
     uppercase: /[A-Z]/.test(formData.password),
@@ -34,37 +58,51 @@ function Register() {
     symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password)
   };
 
-  // Redirect to dashboard if already logged in
+  /**
+   * Redirect to dashboard if already logged in
+   * Prevents authenticated users from accessing registration
+   */
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
+  /**
+   * Handle input field changes
+   * Updates form data and recalculates password strength
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value
     });
+    // Update password strength indicator when password changes
     if (name === 'password') {
       setPasswordStrength(getPasswordStrength(value));
     }
     setError(''); // Clear error when user types
   };
 
+  /**
+   * Handle registration form submission
+   * Validates password strength and matching confirmation
+   * Creates new user account via API
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
 
-    // Client-side validation - check password strength
+    // Client-side validation - check password strength (must be 4/4)
     const strength = getPasswordStrength(formData.password);
     if (strength < 4) {
       setError('Password must contain at least 8 characters, 1 uppercase letter, 1 number, and 1 symbol');
       return;
     }
 
+    // Verify password confirmation matches
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -73,11 +111,12 @@ function Register() {
     setLoading(true);
 
     try {
+      // Send registration request to backend
       const response = await api.post('/auth/register', formData);
       
       // Show success message
       setSuccess(true);
-      // Reset form
+      // Reset form to empty state
       setFormData({
         name: '',
         email: '',

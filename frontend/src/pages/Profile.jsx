@@ -1,3 +1,20 @@
+/**
+ * User Profile Page Component
+ * 
+ * Provides user profile management with two main sections:
+ * 1. Account Details - Update name and profile picture
+ * 2. Password Change - Update password with current password verification
+ * 
+ * Features:
+ * - Profile picture upload (file or URL)
+ * - Email display (locked, cannot be changed)
+ * - Password strength indicator for new passwords
+ * - Real-time validation of password requirements
+ * - Success/error message display
+ * - Auto-logout on 401 errors
+ * - Loading state during profile fetch
+ */
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
@@ -8,23 +25,32 @@ function Profile() {
   const { isAuthenticated, updateUser, user, logout } = useAuth();
   const navigate = useNavigate();
 
+  // Profile form state (name, email, picture)
   const [profile, setProfile] = useState({
     name: '',
     email: '',
     profilePicture: ''
   });
+  
+  // Password change form state
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
-  const [passwordStrength, setPasswordStrength] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [savingProfile, setSavingProfile] = useState(false);
-  const [savingPassword, setSavingPassword] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  
+  const [passwordStrength, setPasswordStrength] = useState(0); // Password strength (0-4)
+  const [loading, setLoading] = useState(true); // Initial profile load
+  const [savingProfile, setSavingProfile] = useState(false); // Profile save loading
+  const [savingPassword, setSavingPassword] = useState(false); // Password save loading
+  const [message, setMessage] = useState(''); // Success message
+  const [error, setError] = useState(''); // Error message
 
+  /**
+   * Fetch user profile on mount
+   * Redirects to login if not authenticated
+   * Updates local state and context with fetched data
+   */
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -40,9 +66,10 @@ function Profile() {
           email: fetchedUser.email || '',
           profilePicture: fetchedUser.profilePicture || ''
         });
-        updateUser(fetchedUser);
+        updateUser(fetchedUser); // Update context with latest data
       } catch (err) {
         console.error('Profile fetch error:', err);
+        // Handle authentication errors
         if (err?.response?.status === 401) {
           logout();
           navigate('/login');
@@ -57,6 +84,12 @@ function Profile() {
     fetchProfile();
   }, [isAuthenticated, navigate]);
 
+  /**
+   * Calculate password strength score (0-4)
+   * Checks for: length (8+), uppercase, number, symbol
+   * @param {string} pwd - Password to evaluate
+   * @returns {number} Strength score 0-4
+   */
   const getPasswordStrength = (pwd) => {
     let strength = 0;
     if (pwd.length >= 8) strength++;
@@ -66,6 +99,10 @@ function Profile() {
     return strength;
   };
 
+  /**
+   * Individual password requirement checks
+   * Used to show checkmarks for each requirement
+   */
   const passwordChecks = {
     length: passwordForm.newPassword.length >= 8,
     uppercase: /[A-Z]/.test(passwordForm.newPassword),
@@ -73,6 +110,10 @@ function Profile() {
     symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(passwordForm.newPassword)
   };
 
+  /**
+   * Handle profile input changes (name, email, picture URL)
+   * Clears messages when user types
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -80,6 +121,10 @@ function Profile() {
     setMessage('');
   };
 
+  /**
+   * Handle profile picture file upload
+   * Converts file to base64 data URL for storage
+   */
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -91,6 +136,10 @@ function Profile() {
     reader.readAsDataURL(file);
   };
 
+  /**
+   * Handle password form input changes
+   * Recalculates strength when new password changes
+   */
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
     setPasswordForm((prev) => ({ ...prev, [name]: value }));
@@ -101,6 +150,10 @@ function Profile() {
     setMessage('');
   };
 
+  /**
+   * Save profile changes (name and profile picture)
+   * Email is locked and cannot be changed
+   */
   const handleProfileSave = async (e) => {
     e.preventDefault();
     setSavingProfile(true);
@@ -114,12 +167,13 @@ function Profile() {
       };
       const response = await api.put('/auth/profile', payload);
       const updatedUser = response.data.user;
+      // Update local state with server response
       setProfile({
         name: updatedUser.name,
         email: updatedUser.email,
         profilePicture: updatedUser.profilePicture || ''
       });
-      updateUser(updatedUser);
+      updateUser(updatedUser); // Update context
       setMessage('Profile updated successfully');
     } catch (err) {
       console.error('Profile save error:', err);
@@ -134,18 +188,26 @@ function Profile() {
     }
   };
 
+  /**
+   * Update user password
+   * Requires current password verification
+   * Validates new password strength (must be 4/4)
+   * Verifies new password and confirmation match
+   */
   const handlePasswordSave = async (e) => {
     e.preventDefault();
     setSavingPassword(true);
     setError('');
     setMessage('');
 
+    // Verify password confirmation matches
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setSavingPassword(false);
       setError('New password and confirmation must match');
       return;
     }
 
+    // Validate password strength (must be 4/4 - all requirements met)
     const strength = getPasswordStrength(passwordForm.newPassword);
     if (strength < 4) {
       setSavingPassword(false);
@@ -161,6 +223,7 @@ function Profile() {
       const response = await api.put('/auth/profile', payload);
       updateUser(response.data.user);
       setMessage('Password updated successfully');
+      // Clear password form after successful update
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setPasswordStrength(0);
     } catch (err) {
@@ -176,6 +239,7 @@ function Profile() {
     }
   };
 
+  // Use profile picture from state or fallback to context user
   const currentAvatar = profile.profilePicture || user?.profilePicture;
 
   if (loading) {

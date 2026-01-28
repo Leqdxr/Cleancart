@@ -1,0 +1,123 @@
+.manage-products-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 80px);
+}
+
+.manage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  animation: fadeInDown 0.5s ease;
+  gap: 1rem;
+}
+
+.manage-header > div {
+  flex: 1;
+}
+
+.manage-header h1 {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.add-product-card {
+  background: #fff;
+  border: 2px solid var(--green-500);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 30px rgba(19, 167, 88, 0.1);
+  animation: slideInDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.add-product-card h3 {
+  margin: 0 0 1.25rem;
+  color: var(--green-700);
+}
+
+.product-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.products-placeholder {
+  background: linear-gradient(135deg, rgba(19, 167, 88, 0.05), rgba(32, 200, 104, 0.08));
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  padding: 4rem 2rem;
+  text-align: center;
+  animation: fadeIn 0.6s ease 0.3s both;
+}
+
+.placeholder-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+.products-placeholder h2 {
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+}
+
+.products-placeholder p {
+  max-width: 500px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .manage-products-container {
+    padding: 1.25rem;
+  }
+
+  .manage-header {
+    flex-direction: column;
+  }
+
+  .manage-header .btn {
+    width: 100%;
+  }
+}

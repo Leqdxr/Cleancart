@@ -1,3 +1,22 @@
+/**
+ * Product Catalog Data
+ * 
+ * Static data file containing:
+ * - Store information (delivery fees, ETAs, ratings)
+ * - Product catalog (computer accessories)
+ * - Per-store pricing and availability
+ * 
+ * This data drives the price comparison engine in CartContext.
+ * Products include specs, descriptions, and multi-store pricing.
+ * 
+ * Categories: Mice, Keyboards, Headsets, Docks, Monitors
+ * Stores: TechMart, GearHub, ProShop
+ */
+
+/**
+ * Available stores with delivery information
+ * Each store has unique pricing for products
+ */
 export const stores = [
   {
     id: 'techmart',
@@ -25,6 +44,14 @@ export const stores = [
   },
 ];
 
+/**
+ * Product catalog with multi-store pricing
+ * Each product includes:
+ * - Basic info (id, name, category, brand)
+ * - Marketing (heroTag, description)
+ * - Technical specs
+ * - Pricing object with per-store price and availability
+ */
 export const products = [
   {
     id: 'mouse-pro',

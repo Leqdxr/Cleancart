@@ -1,3 +1,15 @@
+/**
+ * Homepage Component
+ * 
+ * Landing page with:
+ * - Hero section with value proposition
+ * - Feature highlights (compare stores, smart cart, delivery clarity)
+ * - Three-step process explanation
+ * - Call-to-action sections
+ * - Dynamic content based on authentication state
+ * - Links to products, about, and registration pages
+ */
+
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Homepage.css';

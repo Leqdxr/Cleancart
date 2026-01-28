@@ -1,22 +1,44 @@
+/**
+ * Navigation Bar Component
+ * 
+ * Provides application-wide navigation with role-based menu items
+ * - Public links: Home, Products, About
+ * - Authenticated links: Dashboard
+ * - Admin links: Admin panel
+ * - User actions: Login/Register or Profile/Logout
+ * - Active route highlighting
+ * - Profile picture or role-based icons
+ */
+
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Navbar.css';
 
 function Navbar() {
+  // Get authentication state and user info from context
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation(); // Track current route for active highlighting
 
+  /**
+   * Handle user logout
+   * Clears authentication and redirects to homepage
+   */
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  /**
+   * Navigate to user profile page
+   */
   const handleProfileClick = () => {
     navigate('/profile');
   };
 
+  // Check if current user has admin role
   const isAdmin = user?.role === 'admin';
+  // Get user's profile picture
   const avatar = user?.profilePicture;
 
   return (
@@ -40,7 +62,12 @@ function Navbar() {
             </li>
             {isAuthenticated && (
               <li className={`navbar-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
-                <Link to="/dashboard" className="navbar-link">{isAdmin ? 'Admin' : 'Dashboard'}</Link>
+                <Link to="/dashboard" className="navbar-link">Dashboard</Link>
+              </li>
+            )}
+            {isAuthenticated && isAdmin && (
+              <li className={`navbar-item ${location.pathname.startsWith('/admin') ? 'active' : ''}`}>
+                <Link to="/admin" className="navbar-link">Admin</Link>
               </li>
             )}
           </ul>

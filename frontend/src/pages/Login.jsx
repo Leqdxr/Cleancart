@@ -1,3 +1,15 @@
+/**
+ * Login Page Component
+ * 
+ * Provides user authentication functionality
+ * - Email and password input validation
+ * - Backend authentication via API
+ * - JWT token storage on successful login
+ * - Auto-redirect to dashboard when authenticated
+ * - Error handling for network and auth failures
+ * - Link to registration page for new users
+ */
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -5,22 +17,30 @@ import api from '../api/api';
 import '../styles/Login.css';
 
 function Login() {
+  // Form state for email and password
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(''); // Error message display
+  const [loading, setLoading] = useState(false); // Loading state during login
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to dashboard if already logged in
+  /**
+   * Redirect to dashboard if already logged in
+   * Prevents logged-in users from accessing login page
+   */
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
+  /**
+   * Handle input field changes
+   * Updates form data and clears any previous errors
+   */
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -29,21 +49,22 @@ function Login() {
     setError(''); // Clear error when user types
   };
 
+  /**
+   * Handle form submission
+   * Authenticates user with backend and stores JWT token
+   * Redirects to dashboard on success
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      if ((formData.email === 'admin' || formData.email === 'admin@cleancart.com') && formData.password === 'admin1234') {
-        login({ name: 'Admin', email: 'admin@cleancart.com', role: 'admin' }, 'admin-token');
-        navigate('/dashboard');
-        return;
-      }
+      // Send login request to backend
       const response = await api.post('/auth/login', formData);
       const { token, user } = response.data;
       
-      // Save user data and token
+      // Save user data and token in context (also stores in localStorage)
       login({ ...user, role: user?.role || 'user' }, token);
       
       // Redirect to dashboard

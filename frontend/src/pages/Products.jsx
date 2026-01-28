@@ -1,9 +1,25 @@
+/**
+ * Products Page Component
+ * 
+ * Main shopping interface with:
+ * - Product catalog with category filtering
+ * - Cart management (add/remove/update quantity)
+ * - Multi-store price comparison matrix
+ * - Smart checkout flow (store selection → shipping → payment)
+ * - Best store recommendation based on total price
+ * - Stock availability checking per store
+ * - Three-step checkout process
+ * - Success modal with auto-redirect to dashboard
+ * - Authentication gate for browsing products
+ */
+
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import '../styles/Products.css';
 
+// Checkout flow steps
 const steps = ['Stores', 'Shipping', 'Payment'];
 
 function Products() {
@@ -11,22 +27,26 @@ function Products() {
   const { isAuthenticated, user } = useAuth();
   const { products, cart, addToCart, removeFromCart, updateQuantity, priceMatrix, checkoutCart } = useCart();
 
-  const [category, setCategory] = useState('All');
-  const [selectedStoreId, setSelectedStoreId] = useState('');
-  const [shipping, setShipping] = useState({ name: '', email: '', phone: '', address: '', city: '', zip: '' });
-  const [payment, setPayment] = useState({ method: 'card', note: '' });
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  const [expandedStore, setExpandedStore] = useState(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  // State management
+  const [category, setCategory] = useState('All'); // Product category filter
+  const [selectedStoreId, setSelectedStoreId] = useState(''); // Chosen store for checkout
+  const [shipping, setShipping] = useState({ name: '', email: '', phone: '', address: '', city: '', zip: '' }); // Shipping info
+  const [payment, setPayment] = useState({ method: 'card', note: '' }); // Payment details
+  const [showCheckout, setShowCheckout] = useState(false); // Checkout modal visibility
+  const [activeStep, setActiveStep] = useState(0); // Current step in checkout (0-2)
+  const [expandedStore, setExpandedStore] = useState(null); // Expanded store in price matrix
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // Order success modal
 
+  // Derive unique categories from products
   const categories = useMemo(() => ['All', ...new Set(products.map((p) => p.category))], [products]);
 
+  // Filter products by selected category
   const filteredProducts = useMemo(
     () => (category === 'All' ? products : products.filter((p) => p.category === category)),
     [category, products]
   );
 
+  // Enrich cart items with full product details
   const cartItems = useMemo(
     () =>
       cart
@@ -38,6 +58,10 @@ function Products() {
     [cart, products]
   );
 
+  /**
+   * Find best store (lowest total) with all items in stock
+   * Returns null if cart is empty or no store has all items
+   */
   const bestStore = useMemo(() => {
     if (!cart.length) return null;
     const viable = priceMatrix.filter((store) => store.missingCount === 0);
@@ -45,6 +69,11 @@ function Products() {
     return [...viable].sort((a, b) => a.total - b.total)[0];
   }, [cart.length, priceMatrix]);
 
+  /**
+   * Open checkout modal
+   * Requires authentication and non-empty cart
+   * Auto-selects best store if available
+   */
   const openCheckout = () => {
     if (!cart.length) return;
     if (!isAuthenticated) {
@@ -56,39 +85,57 @@ function Products() {
     if (bestStore) setSelectedStoreId(bestStore.id);
   };
 
+  /**
+   * Close checkout modal and reset expanded store
+   */
   const closeCheckout = () => {
     setShowCheckout(false);
     setExpandedStore(null);
   };
 
+  /**
+   * Handle shipping form input changes
+   */
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
     setShipping((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Handle payment form input changes
+   */
   const handlePaymentChange = (e) => {
     const { name, value } = e.target;
     setPayment((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Navigate between checkout steps
   const nextStep = () => setActiveStep((prev) => Math.min(prev + 1, steps.length - 1));
   const prevStep = () => setActiveStep((prev) => Math.max(prev - 1, 0));
 
+  /**
+   * Place final order
+   * Creates order, clears cart, shows success modal
+   * Redirects to dashboard after 3 seconds
+   */
   const handlePlaceOrder = () => {
     if (!selectedStoreId) return;
     checkoutCart({ user, storeId: selectedStoreId, address: shipping, paymentMethod: payment.method, paymentNote: payment.note });
     setShowCheckout(false);
     setShowSuccessModal(true);
+    // Reset all form state
     setShipping({ name: '', email: '', phone: '', address: '', city: '', zip: '' });
     setPayment({ method: 'card', note: '' });
     setSelectedStoreId('');
     setActiveStep(0);
+    // Auto-redirect to dashboard after 3 seconds
     setTimeout(() => {
       setShowSuccessModal(false);
       navigate('/dashboard');
     }, 3000);
   };
 
+  // Show login wall for non-authenticated users
   if (!isAuthenticated) {
     return (
       <div className="products-shell">

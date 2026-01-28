@@ -1,3 +1,18 @@
+/**
+ * User Dashboard Page Component
+ * 
+ * Displays order management for authenticated users
+ * - Shows all orders for admin users
+ * - Shows only own orders for regular users
+ * - Order statistics (total, pending, scanned, fulfilled)
+ * - Separate tabs for active vs completed orders
+ * - Order status updates (admin only)
+ * - Order deletion (admin only)
+ * - View order details (shipping, payment, items)
+ * - Best store recommendation display
+ * - Guest mode with login prompt
+ */
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -7,9 +22,10 @@ import '../styles/Dashboard.css';
 function Dashboard() {
   const { user, isAuthenticated } = useAuth();
   const { orders, updateOrderStatus, deleteOrder } = useCart();
-  const [showOrderDetails, setShowOrderDetails] = useState(null);
-  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [showOrderDetails, setShowOrderDetails] = useState(null); // Order details modal
+  const [confirmDelete, setConfirmDelete] = useState(null); // Delete confirmation
 
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return (
       <div className="dashboard-container">
@@ -25,14 +41,22 @@ function Dashboard() {
     );
   }
 
+  // Check if current user is admin
   const isAdmin = user?.role === 'admin';
+  // Filter orders: admin sees all, regular users see only their own
   const myOrders = isAdmin ? orders : orders.filter((order) => order.customer === user?.name);
 
+  /**
+   * Get display name for best recommended store
+   * @param {Object} order - Order object
+   * @returns {string} Best store name or fallback
+   */
   const bestStoreLabel = (order) => {
     const found = order.storeComparisons?.find((s) => s.id === order.bestStoreId);
     return found?.name || order.bestStoreId || '—';
   };
 
+  // Calculate order statistics by status
   const stats = {
     total: myOrders.length,
     pending: myOrders.filter((o) => o.status === 'Pending').length,
@@ -40,21 +64,36 @@ function Dashboard() {
     fulfilled: myOrders.filter((o) => o.status === 'Fulfilled').length,
   };
 
+  // Split orders into completed and active
   const completedOrders = myOrders.filter((o) => o.status === 'Fulfilled');
   const activeOrders = myOrders.filter((o) => o.status !== 'Fulfilled');
 
-  const statusOptions = ['Pending', 'Scanned', 'Fulfilled'];
-  const [editingStatusId, setEditingStatusId] = useState(null);
+  const statusOptions = ['Pending', 'Scanned', 'Fulfilled']; // Available status options
+  const [editingStatusId, setEditingStatusId] = useState(null); // Track which order is being edited
 
+  /**
+   * Initiate order deletion (show confirmation)
+   * @param {string} orderId - Order ID to delete
+   */
   const handleDeleteClick = (orderId) => {
     setConfirmDelete(orderId);
   };
 
+  /**
+   * Confirm and execute order deletion
+   * @param {string} orderId - Order ID to delete
+   */
   const handleConfirmDelete = (orderId) => {
     deleteOrder(orderId);
     setConfirmDelete(null);
   };
 
+  /**
+   * Render order details modal
+   * Shows shipping address, payment method, items list
+   * @param {Object} order - Order to display
+   * @returns {JSX.Element|null} Modal component or null
+   */
   const renderOrderDetails = (order) => {
     if (!order || !order.address) return null;
     return (
