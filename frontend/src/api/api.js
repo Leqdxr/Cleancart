@@ -2,6 +2,7 @@
  * API Configuration
  * Axios instance for making HTTP requests to backend
  * Automatically includes JWT token in request headers
+ * Handles token expiry and 401 responses
  */
 
 import axios from 'axios';
@@ -33,5 +34,29 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+/**
+ * Response interceptor
+ * Handles 401 (Unauthorized) responses by clearing auth data
+ * and redirecting to login page
+ */
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid — clear auth state
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      // Only redirect if not already on login/register page
+      if (
+        window.location.pathname !== '/login' &&
+        window.location.pathname !== '/register'
+      ) {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;
