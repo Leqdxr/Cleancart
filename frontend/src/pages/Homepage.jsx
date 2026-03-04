@@ -1,8 +1,22 @@
+/**
+ * Homepage Component
+ *
+ * Landing page for CleanCart application
+ * Sections:
+ * - Hero: Main banner with CTA buttons (different for auth/unauth users)
+ * - Features: Three-card grid explaining platform benefits
+ * - Steps: Three-step guide from account creation to checkout
+ * - CTA: Final call-to-action to register or browse products
+ *
+ * No authentication required to view this page
+ */
+
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Homepage.css';
 
 function Homepage() {
+  // Check auth state to show different hero content
   const { isAuthenticated } = useAuth();
 
   return (
