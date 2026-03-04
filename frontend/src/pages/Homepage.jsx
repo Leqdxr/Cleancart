@@ -1,15 +1,3 @@
-/**
- * Homepage Component
- * 
- * Landing page with:
- * - Hero section with value proposition
- * - Feature highlights (compare stores, smart cart, delivery clarity)
- * - Three-step process explanation
- * - Call-to-action sections
- * - Dynamic content based on authentication state
- * - Links to products, about, and registration pages
- */
-
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Homepage.css';
@@ -20,23 +8,30 @@ function Homepage() {
   return (
     <div className="homepage">
       <section className="hero-section">
-        <div className="hero-card card">
-          <div className="pill">Compare smarter</div>
+        <div className="hero-bg-image" style={{ backgroundImage: "url('/images/homepage.jpg')" }} />
+        <div className="hero-overlay" />
+        <div className="hero-inner">
+          <div className="pill hero-pill">âœ¦ Compare smarter</div>
           <h1>
-            Price your desk setup before you buy.
+            Price your desk setup<br />before you buy.
             <span className="hero-highlight"> One cart. Every store.</span>
           </h1>
           {!isAuthenticated && (
             <>
-              <p>
+              <p className="hero-sub">
                 CleanCart checks keyboards, mice, headsets, docks and more across every partner store.
                 See who has stock, delivery fees, and the lowest total before you check out.
               </p>
               <div className="hero-actions">
-                <Link to="/products" className="btn btn-primary">Build my cart</Link>
-                <Link to="/about" className="btn btn-outline">How it works</Link>
+                <Link to="/products" className="btn btn-primary hero-btn">Build my cart →</Link>
+                <Link to="/about" className="btn hero-btn-ghost">How it works</Link>
               </div>
             </>
+          )}
+          {isAuthenticated && (
+            <div className="hero-actions">
+              <Link to="/products" className="btn btn-primary hero-btn">Browse products →</Link>
+            </div>
           )}
         </div>
       </section>
@@ -70,8 +65,10 @@ function Homepage() {
 
       <section className="steps-section card">
         <div className="section-head">
-          <p className="eyebrow">Three steps</p>
-          <h2>From search to checkout</h2>
+          <div>
+            <p className="eyebrow">Three steps</p>
+            <h2>From search to checkout</h2>
+          </div>
         </div>
         <div className="steps-grid">
           <div className="step-card">
@@ -84,15 +81,15 @@ function Homepage() {
           <div className="step-card">
             <div className="step-index">2</div>
             <div>
-              <h3>Add items to cart</h3>
-              <p>Pick mice, keyboards, headsets, docks, and monitors. We track availability per store.</p>
+              <h3>Browse products</h3>
+              <p>Explore the catalog. Click any product to see per-store ratings and prices.</p>
             </div>
           </div>
           <div className="step-card">
             <div className="step-index">3</div>
             <div>
-              <h3>Checkout and compare</h3>
-              <p>See unique store totals, delivery fees, and stock visibility. Admin sees the order instantly.</p>
+              <h3>Choose your store & checkout</h3>
+              <p>Pick the store with the best price, add your shipping address, and place your order.</p>
             </div>
           </div>
         </div>
