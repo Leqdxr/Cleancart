@@ -1,4 +1,17 @@
-﻿/* ─────────────────────────────────────────
+﻿/**
+ * Products.css - Product Catalog Page Styles
+ *
+ * Styles for the products listing page including:
+ * - Search bar and category filter tabs
+ * - Product card grid with hover animations
+ * - Product image, price range, and store count display
+ * - Login wall for unauthenticated users
+ * - Empty state for no products/results
+ * - Cart fab button with badge
+ * - Staggered entry animations
+ * - Responsive grid adjustments
+ */
+/* ─────────────────────────────────────────
    Products page
 ───────────────────────────────────────── */
 .products-shell {

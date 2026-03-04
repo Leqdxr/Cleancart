@@ -1,3 +1,17 @@
+/**
+ * Navbar.css - Navigation Bar Styles
+ *
+ * Styles for the persistent top navigation bar including:
+ * - Sticky positioning with backdrop blur effect
+ * - Logo and brand styling
+ * - Navigation menu links with active state
+ * - Theme toggle button (dark/light mode)
+ * - Notification bell with dropdown and badge
+ * - User profile button with avatar
+ * - Login/Register CTA buttons
+ * - Responsive adjustments
+ */
+
 .navbar {
   position: sticky;
   top: 0;

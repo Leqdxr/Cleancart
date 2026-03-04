@@ -1,12 +1,36 @@
-﻿import { useState, useEffect } from "react";
+﻿/**
+ * Product Detail Page Component
+ *
+ * Displays detailed information for a single product with:
+ * - Product image, name, description, and category tag
+ * - Store-by-store price comparison with visual bar chart
+ * - Store cards showing price, stock, delivery cost, and rating
+ * - Star rating display component
+ * - Multi-step checkout modal:
+ *   Step 0: Select store (with recommended/cheapest badges)
+ *   Step 1: Enter shipping details (name, email, phone, address)
+ *   Step 2: Payment review and order placement
+ * - Order success animation with redirect to dashboard
+ * - Login wall for unauthenticated users
+ * - 404 state for missing products
+ */
+
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { stores as STORES } from "../data/catalog";
 import "../styles/ProductDetail.css";
 
+// Checkout wizard step labels
 const STEPS = ["Select Store", "Shipping", "Payment"];
 
+/**
+ * Star Rating display component
+ * Renders 5 stars with filled state based on rounded value
+ * @param {Object} props
+ * @param {number} props.value - Rating value (0–5)
+ */
 function StarRating({ value }) {
   return (
     <span className="stars" title={`${value} / 5`}>
@@ -19,42 +43,47 @@ function StarRating({ value }) {
 }
 
 export default function ProductDetail() {
+  // Get product ID from URL params
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const { products, checkoutSingleProduct } = useCart();
 
+  // Find the product in the catalog by URL param ID
   const product = products.find((p) => p.id === id);
 
-  // Compute store list early (safe if product is null) so hooks run unconditionally
+  // Compute available stores list (runs even if product is null to keep hooks unconditional)
   const availableStores = Object.entries(product?.stores || {})
     .filter(([, data]) => data.available)
     .map(([sid, data]) => {
       const storeMeta = STORES.find((s) => s.id === sid) || { name: sid };
       return { id: sid, meta: storeMeta, ...data };
     });
+  // Recommended store: highest rated among available stores
   const recommendedStore = availableStores.length
     ? availableStores.reduce((best, s) => (Number(s.rating || 0) > Number(best.rating || 0) ? s : best))
     : null;
+  // Cheapest store: lowest price among available stores
   const cheapestStore = availableStores.length
     ? availableStores.reduce((low, s) => (Number(s.price || 0) < Number(low.price || 0) ? s : low))
     : null;
+  // Max price for price bar width calculation
   const maxPrice = availableStores.length ? Math.max(...availableStores.map((s) => Number(s.price || 0))) : 0;
 
-  /* ── Modal state ── */
-  const [open, setOpen] = useState(false);
-  const [step, setStep] = useState(0);
+  /* ── Checkout modal state ── */
+  const [open, setOpen] = useState(false);     // Modal visibility
+  const [step, setStep] = useState(0);         // Current wizard step (0–2)
 
-  /* Step 1 */
+  /* Step 1: Selected store for purchase */
   const [selectedStore, setSelectedStore] = useState(null);
 
-  /* Step 2 */
+  /* Step 2: Shipping address form fields */
   const [addr, setAddr] = useState({ name: user?.name || "", email: user?.email || "", phone: "", address: "", city: "", zip: "" });
 
-  /* Step 3 / result */
-  const [placing, setPlacing] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [err, setErr] = useState("");
+  /* Step 3: Order placement state */
+  const [placing, setPlacing] = useState(false);  // Loading during order placement
+  const [success, setSuccess] = useState(false);  // Order success flag
+  const [err, setErr] = useState("");              // Error message
 
   // Reset modal state when opened; auto-select recommended store
   useEffect(() => {
@@ -89,9 +118,14 @@ export default function ProductDetail() {
     );
   }
 
-  /* ── Address helpers ── */
+  /* ── Address validation helper — all fields must be filled ── */
   const addrFilled = addr.name && addr.email && addr.phone && addr.address && addr.city && addr.zip;
 
+  /**
+   * Place order via checkout function
+   * Calls checkoutSingleProduct with selected store and shipping info
+   * Shows success animation and redirects to dashboard on completion
+   */
   async function placeOrder() {
     if (!selectedStore || !addrFilled) return;
     setPlacing(true); setErr("");

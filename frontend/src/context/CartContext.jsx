@@ -1,8 +1,22 @@
-﻿import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
+﻿/**
+ * Cart Context
+ * Manages shopping cart, orders, products, and price comparison logic
+ * Persists data to localStorage for session continuity
+ * Provides cart operations, checkout flow, and admin product management
+ */
+
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { stores } from '../data/catalog';
 
+// Create cart context for global state management
 const CartContext = createContext();
 
+/**
+ * Load data from localStorage with JSON parsing
+ * @param {string} key - localStorage key
+ * @param {*} fallback - Default value if key not found or parse fails
+ * @returns {*} Parsed value or fallback
+ */
 const load = (key, fallback) => {
   try {
     const raw = localStorage.getItem(key);
@@ -12,38 +26,73 @@ const load = (key, fallback) => {
   }
 };
 
+/**
+ * Save data to localStorage as JSON string
+ * @param {string} key - localStorage key
+ * @param {*} value - Value to persist
+ */
 const persist = (key, value) => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {}
 };
 
+/**
+ * Cart Provider Component
+ * Wraps application to provide cart state and operations
+ *
+ * Manages:
+ * - Shopping cart items (add, remove, update quantity)
+ * - Order history and checkout
+ * - Product catalog (admin CRUD)
+ * - Price comparison matrix across stores
+ */
 export const CartProvider = ({ children }) => {
+  // Cart items array: [{ productId, quantity }]
   const [cart, setCart] = useState(() => load('cc_cart', []));
+  // Order history array sorted newest first
   const [orders, setOrders] = useState(() => load('cc_orders', []));
   // Dynamic products managed by admin, stored in localStorage
   const [products, setProducts] = useState(() => load('cc_products', []));
 
+  // Persist state changes to localStorage automatically
   useEffect(() => { persist('cc_cart', cart); }, [cart]);
   useEffect(() => { persist('cc_orders', orders); }, [orders]);
   useEffect(() => { persist('cc_products', products); }, [products]);
 
+  /**
+   * Add a product to the cart
+   * Increments quantity if product already exists, otherwise adds new entry
+   * @param {string} productId - Product ID to add
+   */
   const addToCart = (productId) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.productId === productId);
       if (existing) {
+        // Product already in cart — increment quantity
         return prev.map((item) =>
           item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
+      // New product — add with quantity 1
       return [...prev, { productId, quantity: 1 }];
     });
   };
 
+  /**
+   * Remove a product entirely from the cart
+   * @param {string} productId - Product ID to remove
+   */
   const removeFromCart = (productId) => {
     setCart((prev) => prev.filter((item) => item.productId !== productId));
   };
 
+  /**
+   * Update the quantity of a product in the cart
+   * Removes product if quantity drops to zero or below
+   * @param {string} productId - Product ID to update
+   * @param {number} quantity - New quantity value
+   */
   const updateQuantity = (productId, quantity) => {
     if (quantity <= 0) { removeFromCart(productId); return; }
     setCart((prev) =>
@@ -51,22 +100,39 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  /** Clear all items from the cart */
   const clearCart = () => setCart([]);
 
-  // Admin product management
+  /**
+   * Add a new product to the catalog (admin function)
+   * Generates a unique ID using timestamp
+   * @param {Object} product - Product data (name, description, category, imageUrl, stores)
+   * @returns {Object} Created product with generated ID
+   */
   const addProduct = (product) => {
     const newProduct = { ...product, id: `prod-${Date.now()}` };
     setProducts((prev) => [...prev, newProduct]);
     return newProduct;
   };
 
+  /**
+   * Delete a product from the catalog (admin function)
+   * Also removes the product from any user's cart
+   * @param {string} productId - Product ID to delete
+   */
   const deleteProduct = (productId) => {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     // Also remove from cart if present
     setCart((prev) => prev.filter((item) => item.productId !== productId));
   };
 
+  /**
+   * Price comparison matrix — computes total cost per store for all cart items
+   * Includes delivery fees, availability tracking, and missing item counts
+   * Recalculates whenever cart or products change
+   */
   const priceMatrix = useMemo(() => {
+    // Initialize each store with its delivery fee as the base total
     const totals = stores.map((store) => ({
       ...store,
       total: store.deliveryFee,
@@ -74,20 +140,24 @@ export const CartProvider = ({ children }) => {
       items: [],
     }));
 
+    // Calculate totals for each cart item across all stores
     cart.forEach((entry) => {
       const product = products.find((p) => p.id === entry.productId);
       if (!product) return;
       totals.forEach((storeTotal) => {
         const storeData = product.stores?.[storeTotal.id];
         if (storeData?.available) {
+          // Product available at this store — add to total
           storeTotal.items.push({ ...product, quantity: entry.quantity, price: storeData.price });
           storeTotal.total += storeData.price * entry.quantity;
         } else {
+          // Product not available — track as missing
           storeTotal.unavailable.push(product.name);
         }
       });
     });
 
+    // Return enriched store data with rounded totals and counts
     return totals.map((store) => ({
       ...store,
       total: Number(store.total.toFixed(2)),
@@ -96,6 +166,17 @@ export const CartProvider = ({ children }) => {
     }));
   }, [cart, products]);
 
+  /**
+   * Checkout entire cart — creates an order from all cart items
+   * Selects the best store (cheapest with all items) or uses the provided storeId
+   * @param {Object} options - Checkout options
+   * @param {Object} options.user - Current user info
+   * @param {string} options.storeId - Preferred store ID
+   * @param {string} options.address - Delivery address
+   * @param {string} options.paymentMethod - Payment method (e.g., 'cod')
+   * @param {string} options.paymentNote - Optional payment note
+   * @returns {Object|null} Created order or null if cart is empty
+   */
   const checkoutCart = ({ user = {}, storeId, address, paymentMethod, paymentNote }) => {
     if (!cart.length) return null;
 
@@ -149,7 +230,18 @@ export const CartProvider = ({ children }) => {
     return order;
   };
 
-  // Single-product checkout (used from product detail page)
+  /**
+   * Single-product checkout — creates order for one product from product detail page
+   * Calculates total including delivery cost for the selected store
+   * @param {Object} options - Checkout options
+   * @param {Object} options.user - Current user info
+   * @param {string} options.productId - Product to purchase
+   * @param {string} options.storeId - Selected store
+   * @param {number} options.quantity - Quantity to order (default: 1)
+   * @param {string} options.address - Delivery address
+   * @param {string} options.paymentMethod - Payment method
+   * @returns {Object|null} Created order or null if product/store not found
+   */
   const checkoutSingleProduct = ({ user = {}, productId, storeId, quantity = 1, address, paymentMethod }) => {
     const product = products.find((p) => p.id === productId);
     if (!product) return null;
@@ -191,6 +283,12 @@ export const CartProvider = ({ children }) => {
     return order;
   };
 
+  /**
+   * Update the status of an order (admin function)
+   * @param {string} orderId - Order ID to update
+   * @param {string} nextStatus - New status (pending/processing/shipped/delivered/cancelled)
+   * @returns {Object} The order before status change (for notification triggers)
+   */
   const updateOrderStatus = (orderId, nextStatus) => {
     const order = orders.find((o) => o.id === orderId);
     setOrders((prev) =>
@@ -200,10 +298,15 @@ export const CartProvider = ({ children }) => {
     return order;
   };
 
+  /**
+   * Delete an order from history
+   * @param {string} orderId - Order ID to remove
+   */
   const deleteOrder = (orderId) => {
     setOrders((prev) => prev.filter((o) => o.id !== orderId));
   };
 
+  // Context value providing all cart operations to consumers
   const value = {
     cart,
     products,
@@ -225,6 +328,12 @@ export const CartProvider = ({ children }) => {
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
+/**
+ * Custom hook to access cart context
+ * Must be used within CartProvider
+ * @returns {Object} Cart context value with all cart operations
+ * @throws {Error} If used outside CartProvider
+ */
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) throw new Error('useCart must be used within CartProvider');

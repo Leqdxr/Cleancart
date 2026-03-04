@@ -1,14 +1,33 @@
+/**
+ * Forgot Password Page Component
+ *
+ * Allows users to request a password reset email
+ * Features:
+ * - Split layout (image panel + form panel)
+ * - Email input with validation
+ * - Loading state during API call
+ * - Success state showing email confirmation
+ * - Server connection error handling
+ * - Link back to login page
+ * - 20-minute expiry notice on success
+ */
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/api';
 import '../styles/ForgotPassword.css';
 
 function ForgotPassword() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  // Form and UI state
+  const [email, setEmail] = useState('');         // Email input value
+  const [loading, setLoading] = useState(false);   // API request loading
+  const [error, setError] = useState('');           // Error message
+  const [success, setSuccess] = useState(false);    // Success state toggle
 
+  /**
+   * Handle forgot password form submission
+   * Sends email to backend to trigger password reset email
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

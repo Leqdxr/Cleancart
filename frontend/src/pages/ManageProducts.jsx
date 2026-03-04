@@ -1,10 +1,30 @@
-﻿import { useState, useRef } from "react";
+﻿/**
+ * Manage Products Admin Page Component
+ *
+ * Admin interface for product catalog management
+ * Features:
+ * - Add new products with name, description, category, and image upload
+ * - Configure per-store availability, price, stock, delivery cost, and rating
+ * - Image upload via file picker (converted to base64)
+ * - Form validation with error messages per field
+ * - Existing products list with expandable store details
+ * - Delete products with confirmation modal
+ * - Product count badge
+ * - Success message on product creation
+ */
+
+import { useState, useRef } from "react";
 import { useCart } from "../context/CartContext";
 import { stores as STORES } from "../data/catalog";
 import "../styles/ManageProducts.css";
 
+// Default empty store data template
 const EMPTY_STORE = { available: false, price: "", stock: "", deliveryCost: "", rating: "" };
 
+/**
+ * Create a fresh form state with empty fields and store data for all stores
+ * @returns {Object} Initial form state
+ */
 function newForm() {
   const storeData = {};
   STORES.forEach((s) => { storeData[s.id] = { ...EMPTY_STORE }; });
@@ -13,23 +33,34 @@ function newForm() {
 
 export default function ManageProducts() {
   const { products, addProduct, deleteProduct } = useCart();
+  // File input ref for image upload
   const fileRef = useRef(null);
 
+  // Form state for adding a new product
   const [form, setForm] = useState(newForm());
+  // Image preview URL (base64)
   const [preview, setPreview] = useState(null);
+  // Submission loading state
   const [submitting, setSubmitting] = useState(false);
+  // Success notification message
   const [successMsg, setSuccessMsg] = useState("");
+  // Field-level validation errors
   const [errors, setErrors] = useState({});
+  // Product pending deletion
   const [deleteTarget, setDeleteTarget] = useState(null);
+  // Expanded product detail ID in the product list
   const [expandedId, setExpandedId] = useState(null);
 
-  /* ── Field helpers ── */
+  /* ── Field update helpers ── */
+  /** Update a top-level form field and clear its error */
   function setField(k, v) { setForm((f) => ({ ...f, [k]: v })); setErrors((e) => ({ ...e, [k]: "" })); }
 
+  /** Update a store-specific field (price, stock, deliveryCost, rating) */
   function setStoreField(storeId, k, v) {
     setForm((f) => ({ ...f, storeData: { ...f.storeData, [storeId]: { ...f.storeData[storeId], [k]: v } } }));
   }
 
+  /** Toggle store availability checkbox */
   function toggleStore(storeId) {
     setForm((f) => ({
       ...f,
@@ -37,7 +68,10 @@ export default function ManageProducts() {
     }));
   }
 
-  /* ── Image upload → base64 ── */
+  /**
+   * Handle image file selection
+   * Reads file as base64 data URL for preview and storage
+   */
   function handleImageFile(e) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -50,7 +84,11 @@ export default function ManageProducts() {
     reader.readAsDataURL(file);
   }
 
-  /* ── Validate ── */
+  /**
+   * Validate form before submission
+   * Checks required fields and store-specific numeric values
+   * @returns {boolean} True if form is valid
+   */
   function validate() {
     const errs = {};
     if (!form.name.trim()) errs.name = "Product name is required";
@@ -68,7 +106,11 @@ export default function ManageProducts() {
     return Object.keys(errs).length === 0;
   }
 
-  /* ── Submit ── */
+  /**
+   * Handle form submission
+   * Builds stores object from enabled store data and adds product to catalog
+   * Resets form on success with a timed success message
+   */
   async function handleSubmit(e) {
     e.preventDefault();
     if (!validate()) return;

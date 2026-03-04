@@ -1,3 +1,15 @@
+/**
+ * ManageUsers.css - Admin User Management Styles
+ *
+ * Styles for the admin user management page including:
+ * - User card grid with avatar and info
+ * - Inline edit form with input fields
+ * - Action buttons (edit, delete)
+ * - Delete confirmation modal
+ * - Alert messages (success/error)
+ * - Responsive grid adjustments
+ */
+
 .manage-users-container {
   max-width: 1400px;
   margin: 0 auto;

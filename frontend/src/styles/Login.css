@@ -1,3 +1,15 @@
+/**
+ * Login.css - Login Page Styles
+ *
+ * Styles for the login page including:
+ * - Welcome redirect overlay with animation
+ * - Split layout (image panel + form panel)
+ * - Login form with input fields
+ * - Show/hide password toggle
+ * - Error message styling
+ * - Forgot password link
+ * - Responsive adjustments for mobile
+ */
 /* ── Welcome Redirect Overlay ────────────────────────── */
 @keyframes overlayIn {
   from {

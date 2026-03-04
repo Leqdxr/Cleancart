@@ -1,4 +1,17 @@
-﻿/* ─────────────────────────────────────────
+﻿/**
+ * ProductDetail.css - Product Detail Page & Checkout Modal Styles
+ *
+ * Styles for the product detail page including:
+ * - Product image and info layout
+ * - Store cards with price, stock, delivery, and ratings
+ * - Price comparison bar chart with badges
+ * - Star rating component
+ * - Multi-step checkout modal (store select, shipping, payment)
+ * - Step indicator bar
+ * - Order success animation
+ * - Responsive layout adjustments
+ */
+/* ─────────────────────────────────────────
    ProductDetail page + checkout modal
 ───────────────────────────────────────── */
 .pd-shell {

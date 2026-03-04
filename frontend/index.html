@@ -1,13 +1,26 @@
+<!--
+  CleanCart Frontend - Entry HTML File
+  
+  This is the single HTML page for the React SPA (Single Page Application).
+  Vite uses this as the template during development and production builds.
+  
+  - #root div: Mount point for the React application
+  - main.jsx: Entry script that bootstraps React with StrictMode
+-->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Favicon for browser tab -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Responsive viewport meta tag -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>CleanCart</title>
   </head>
   <body>
+    <!-- React app mount point -->
     <div id="root"></div>
+    <!-- Vite entry script - loads the React application -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

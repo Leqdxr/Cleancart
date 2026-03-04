@@ -1,3 +1,14 @@
+/**
+ * index.css - Global Styles & CSS Custom Properties
+ *
+ * Defines the design system for the entire CleanCart application:
+ * - Google Fonts import (Inter, Poppins, Playfair Display)
+ * - CSS custom properties for light and dark themes
+ * - Color palette, typography, spacing, and shadow tokens
+ * - Base element resets and utility classes
+ * - Responsive breakpoints and common component styles
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
 
 /* ── Light mode (default) ─────────────────────────────── */

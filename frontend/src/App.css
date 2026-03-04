@@ -1,3 +1,9 @@
+/**
+ * App.css - Root Application Styles
+ * Defines the base layout for the React app root container
+ * Sets full-width and min-height for the root element and app wrapper
+ */
+
 #root {
   width: 100%;
   min-height: 100vh;

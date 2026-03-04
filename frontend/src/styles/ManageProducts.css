@@ -1,4 +1,16 @@
-﻿/* ManageProducts */
+﻿/**
+ * ManageProducts.css - Admin Product Management Styles
+ *
+ * Styles for the product management page including:
+ * - Add product form with field layout
+ * - Store availability checkboxes and field grids
+ * - Image upload area with preview
+ * - Existing product list with expandable store pills
+ * - Validation error messages
+ * - Success banner animation
+ * - Delete confirmation modal
+ * - Responsive layout adjustments
+ */
 .mp-shell {
   max-width: 900px;
   margin: 0 auto;

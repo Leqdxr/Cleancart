@@ -1,4 +1,15 @@
-﻿/* AdminDashboard */
+﻿/**
+ * AdminDashboard.css - Admin Dashboard Styles
+ *
+ * Styles for the admin order management dashboard including:
+ * - Stats grid cards (orders, revenue)
+ * - Order list with expandable details
+ * - Status badges and status change dropdown
+ * - Broadcast notification form
+ * - Quick link buttons
+ * - Delete confirmation modal
+ * - Responsive layout adjustments
+ */
 .adash-shell {
   max-width: 1000px;
   margin: 0 auto;

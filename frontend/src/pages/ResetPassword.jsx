@@ -1,24 +1,47 @@
+/**
+ * Reset Password Page Component
+ *
+ * Allows users to set a new password using a reset token from email
+ * Features:
+ * - Split layout (image panel + form panel)
+ * - Token extracted from URL params
+ * - New password and confirm password fields
+ * - Show/hide password toggles
+ * - Password strength indicator (Weak/Fair/Good/Strong)
+ * - Real-time password match validation
+ * - Success state with redirect to login
+ * - Server connection error handling
+ */
+
 import { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import '../styles/ResetPassword.css';
 
 function ResetPassword() {
+  // Extract reset token from URL params (/reset-password/:token)
   const { token } = useParams();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ newPassword: '', confirmPassword: '' });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
 
+  // Form and UI state
+  const [formData, setFormData] = useState({ newPassword: '', confirmPassword: '' });
+  const [showPassword, setShowPassword] = useState(false);   // New password visibility
+  const [showConfirm, setShowConfirm] = useState(false);     // Confirm password visibility
+  const [loading, setLoading] = useState(false);              // API request loading
+  const [error, setError] = useState('');                     // Error message
+  const [success, setSuccess] = useState(false);              // Success state
+
+  /** Handle form input changes and clear errors */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
   };
 
-  // Password strength calculation
+  /**
+   * Calculate password strength for visual indicator
+   * @param {string} password - Password to evaluate
+   * @returns {Object} { level: 0-4, label: string, color: string }
+   */
   const getPasswordStrength = (password) => {
     if (!password) return { level: 0, label: '', color: '' };
     let score = 0;
@@ -34,8 +57,13 @@ function ResetPassword() {
     return { level: 4, label: 'Strong', color: '#22c55e' };
   };
 
+  // Current password strength for display
   const strength = getPasswordStrength(formData.newPassword);
 
+  /**
+   * Handle password reset form submission
+   * Validates password length and match, then sends to backend
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

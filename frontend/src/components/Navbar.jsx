@@ -1,3 +1,17 @@
+/**
+ * Navbar Component
+ *
+ * Persistent navigation bar displayed at the top of every page
+ * Features:
+ * - Brand logo linking to homepage
+ * - Navigation links (Home, Products, About, Dashboard/Admin)
+ * - Theme toggle (light/dark mode)
+ * - Notification bell with dropdown (unread badge)
+ * - User profile button with avatar
+ * - Login/Register buttons for unauthenticated users
+ * - Responsive layout with sticky positioning
+ */
+
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
@@ -6,19 +20,25 @@ import { useNotifications } from '../context/NotificationContext';
 import '../styles/Navbar.css';
 
 function Navbar() {
+  // Auth state and methods
   const { isAuthenticated, user, logout } = useAuth();
+  // Theme toggle for dark/light mode
   const { theme, toggleTheme } = useTheme();
+  // Notification state and methods
   const { getNotificationsForUser, getUnreadCount, markAsRead, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Notification dropdown visibility state
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+  // Ref for click-outside detection on notification dropdown
   const notifRef = useRef(null);
 
+  // Get notifications and unread count for the current user
   const userNotifs = isAuthenticated ? getNotificationsForUser(user?.id, user?.email) : [];
   const unreadCount = isAuthenticated ? getUnreadCount(user?.id, user?.email) : 0;
 
-  // Close dropdown when clicking outside
+  // Close notification dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -29,16 +49,20 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  /** Handle user logout — clear auth state and redirect to home */
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
+  /** Navigate to user profile page */
   const handleProfileClick = () => {
     navigate('/profile');
   };
 
+  // Determine if current user is admin for conditional rendering
   const isAdmin = user?.role === 'admin';
+  // Get user's profile picture for avatar display
   const avatar = user?.profilePicture;
 
   return (

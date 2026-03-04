@@ -1,14 +1,30 @@
+/**
+ * Register Page Component
+ *
+ * New user registration page with:
+ * - Split layout (image panel + form panel)
+ * - Full name, email, password, and confirm password fields
+ * - Password strength indicator (Weak/Medium/Strong)
+ * - Real-time password requirement checklist
+ * - Show/hide password toggles
+ * - Auto-redirect if already authenticated
+ * - Success message with link to login
+ * - Server connection error handling
+ */
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Register.css';
 
+/** SVG icon for visible password (eye open) */
 const EyeIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
   </svg>
 );
+/** SVG icon for hidden password (eye with slash) */
 const EyeOffIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17.94 17.94A10.1 10.1 0 0 1 12 20c-7 0-11-8-11-8a18.06 18.06 0 0 1 5.06-5.94"/>
@@ -18,16 +34,27 @@ const EyeOffIcon = () => (
 );
 
 function Register() {
+  // Form field state
   const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  // Error and success message states
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  // API loading state
   const [loading, setLoading] = useState(false);
+  // Password strength score (0–4)
   const [passwordStrength, setPasswordStrength] = useState(0);
+  // Password visibility toggles
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  /**
+   * Calculate password strength score
+   * Checks length (8+), uppercase, number, and symbol
+   * @param {string} pwd - Password to evaluate
+   * @returns {number} Score from 0–4
+   */
   const getPasswordStrength = (pwd) => {
     let s = 0;
     if (pwd.length >= 8) s++;
@@ -37,6 +64,7 @@ function Register() {
     return s;
   };
 
+  // Individual password requirement checks for UI checkmarks
   const passwordChecks = {
     length: formData.password.length >= 8,
     uppercase: /[A-Z]/.test(formData.password),
@@ -44,10 +72,12 @@ function Register() {
     symbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password),
   };
 
+  // Redirect already-authenticated users to dashboard
   useEffect(() => {
     if (isAuthenticated) navigate('/dashboard');
   }, [isAuthenticated, navigate]);
 
+  /** Handle form input changes and recalculate password strength */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -55,6 +85,11 @@ function Register() {
     setError('');
   };
 
+  /**
+   * Handle registration form submission
+   * Validates password strength and match before sending to backend
+   * Resets form on success, shows error on failure
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

@@ -1,3 +1,15 @@
+/**
+ * About.css - About Page Styles
+ *
+ * Styles for the About page including:
+ * - Page layout with background and padding
+ * - Introduction text and section headers
+ * - Feature cards with numbered steps
+ * - Mission statement styling
+ * - Values grid with hover effects
+ * - Responsive adjustments
+ */
+
 .about-container {
   min-height: calc(100vh - 80px);
   padding: 4rem 2rem;

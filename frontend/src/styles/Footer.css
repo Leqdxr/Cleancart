@@ -1,3 +1,15 @@
+/**
+ * Footer.css - Footer Component Styles
+ *
+ * Styles for the site-wide footer including:
+ * - Gradient background with brand colors
+ * - Four-column grid layout (brand, links, contact, about)
+ * - Footer logo and navigation links
+ * - Contact info with icons
+ * - Bottom copyright bar
+ * - Hover effects on links
+ * - Responsive column adjustments
+ */
 /* ── Footer ────────────────────────────────────────────── */
 .footer {
   background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%);

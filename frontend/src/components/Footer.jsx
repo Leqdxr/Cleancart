@@ -1,7 +1,20 @@
+/**
+ * Footer Component
+ * 
+ * Site-wide footer displayed on every page
+ * Contains:
+ * - Brand logo and about description
+ * - Quick navigation links
+ * - Contact information (phone, email, address)
+ * - About CleanCart section
+ * - Copyright notice with dynamic year
+ */
+
 import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
 
 function Footer() {
+  // Get current year dynamically for copyright notice
   const currentYear = new Date().getFullYear();
 
   return (

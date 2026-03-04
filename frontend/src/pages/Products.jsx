@@ -1,4 +1,19 @@
-﻿import { useMemo, useState } from "react";
+﻿/**
+ * Products Catalog Page Component
+ *
+ * Displays the product catalog with search and category filtering
+ * Features:
+ * - Login wall for unauthenticated users
+ * - Search bar for name/description filtering
+ * - Category tabs for category-based filtering
+ * - Product cards showing image, price range, and store count
+ * - Click-to-navigate to product detail page
+ * - Cart item count badge
+ * - Empty state for no products or no search results
+ * - Entry animations with staggered delays
+ */
+
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -8,11 +23,15 @@ function Products() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { products, cart } = useCart();
+  // Search query for filtering products by name/description
   const [search, setSearch] = useState("");
+  // Currently selected category tab
   const [category, setCategory] = useState("All");
 
+  // Build unique category list from products, prepend "All"
   const categories = useMemo(() => ["All", ...new Set(products.map((p) => p.category).filter(Boolean))], [products]);
 
+  // Filter products by category and search query
   const filtered = useMemo(() => {
     let list = category === "All" ? products : products.filter((p) => p.category === category);
     if (search.trim()) {
@@ -22,8 +41,10 @@ function Products() {
     return list;
   }, [products, category, search]);
 
+  // Number of items in cart for badge display
   const cartCount = cart.length;
 
+  // Show login wall if user is not authenticated
   if (!isAuthenticated) {
     return (
       <div className="products-shell">

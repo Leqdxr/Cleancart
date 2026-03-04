@@ -1,4 +1,16 @@
-﻿/* Dashboard */
+﻿/**
+ * Dashboard.css - User Dashboard Styles
+ *
+ * Styles for the user dashboard page including:
+ * - Hero section with greeting and shop link
+ * - Stats grid cards (orders, pending, in transit, delivered)
+ * - Cart summary banner
+ * - Order cards with expandable details
+ * - Status badges with color coding
+ * - Completed orders collapsible section
+ * - Delete confirmation modal
+ * - Responsive layout adjustments
+ */
 .dash-shell {
   max-width: 900px;
   margin: 0 auto;

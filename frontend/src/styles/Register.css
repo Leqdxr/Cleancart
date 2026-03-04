@@ -1,4 +1,16 @@
-﻿.register-container {
+﻿/**
+ * Register.css - Registration Page Styles
+ *
+ * Styles for the user registration page including:
+ * - Split layout (image panel + form panel)
+ * - Registration form with input fields
+ * - Password strength bar and requirement checklist
+ * - Show/hide password toggle buttons
+ * - Success and error message styling
+ * - Responsive adjustments for mobile
+ */
+
+.register-container {
   min-height: calc(100vh - 72px);
   display: flex;
   align-items: center;

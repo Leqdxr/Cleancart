@@ -1,3 +1,16 @@
+/**
+ * Profile.css - User Profile Page Styles
+ *
+ * Styles for the profile management page including:
+ * - Profile header with avatar and name
+ * - Account details form card
+ * - Password change form card
+ * - Profile picture upload area
+ * - Password strength indicator and checklist
+ * - Alert messages (success/error)
+ * - Responsive layout adjustments
+ */
+
 .profile-page {
   max-width: 1080px;
   margin: 2rem auto 3rem auto;

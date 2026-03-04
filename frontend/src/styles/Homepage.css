@@ -1,4 +1,16 @@
-﻿.homepage {
+﻿/**
+ * Homepage.css - Landing Page Styles
+ *
+ * Styles for the home/landing page including:
+ * - Hero section with background image and overlay
+ * - Feature cards grid with icons
+ * - Steps section with numbered indicators
+ * - Call-to-action section
+ * - Pill badges and action buttons
+ * - Responsive layout adjustments
+ */
+
+.homepage {
   width: 100%;
   display: flex;
   flex-direction: column;
