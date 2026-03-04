@@ -4,10 +4,33 @@
  * Provides login, logout, and user update functionality
  */
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 // Create authentication context
 const AuthContext = createContext();
+
+/**
+ * Decode JWT token payload (without verification — that's server-side)
+ */
+const decodeToken = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Check if token is expired
+ */
+const isTokenExpired = (token) => {
+  const payload = decodeToken(token);
+  if (!payload?.exp) return true;
+  // exp is in seconds, Date.now() in ms
+  return Date.now() >= payload.exp * 1000;
+};
 
 /**
  * Custom hook to access authentication context
@@ -41,21 +64,28 @@ export const AuthProvider = ({ children }) => {
 
   /**
    * On component mount, check if user is already logged in
-   * Restores user session from localStorage
+   * Restores user session from localStorage if token is still valid
    */
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     
     if (token && userData) {
-      try {
-        // Parse and restore user data
-        setUser(JSON.parse(userData));
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-        // Clear invalid data
+      // Check if token is expired
+      if (isTokenExpired(token)) {
+        console.warn('JWT token expired, logging out');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+      } else {
+        try {
+          // Parse and restore user data
+          setUser(JSON.parse(userData));
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          // Clear invalid data
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
       }
     }
     setLoading(false);
