@@ -4,7 +4,6 @@
   flex-direction: column;
   gap: 0;
 }
-
 /* ── Hero ──────────────────────────────────────────────── */
 .hero-section {
   position: relative;
@@ -13,7 +12,6 @@
   align-items: center;
   overflow: hidden;
 }
-
 .hero-bg-image {
   position: absolute;
   inset: 0;
@@ -27,7 +25,6 @@
 .hero-section:hover .hero-bg-image {
   transform: scale(1);
 }
-
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -39,7 +36,6 @@
   );
   z-index: 1;
 }
-
 .hero-inner {
   position: relative;
   z-index: 2;
@@ -53,10 +49,15 @@
   gap: 1.25rem;
   animation: heroFadeIn 0.9s ease both;
 }
-
 @keyframes heroFadeIn {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+  opacity: 0;
+  transform: translateY(28px);
+}
+  to {
+  opacity: 1;
+  transform: translateY(0);
+}
 }
 
 .hero-pill {
@@ -66,7 +67,6 @@
   border: 1px solid rgba(255,255,255,0.2);
   font-size: 0.88rem;
 }
-
 .hero-inner h1 {
   font-size: clamp(2.2rem, 5vw, 3.8rem);
   line-height: 1.1;
@@ -74,7 +74,6 @@
   max-width: 700px;
   text-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
-
 .hero-highlight {
   display: block;
   background: linear-gradient(135deg, #a5b4fc, #c7d2fe);
@@ -82,7 +81,6 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .hero-sub {
   color: rgba(255,255,255,0.8);
   max-width: 540px;
@@ -90,20 +88,17 @@
   line-height: 1.65;
   margin: 0;
 }
-
 .hero-actions {
   display: flex;
   gap: 0.85rem;
   flex-wrap: wrap;
   margin-top: 0.5rem;
 }
-
 .hero-btn {
   font-size: 1rem;
   padding: 0.85rem 1.8rem;
   border-radius: 14px;
 }
-
 .hero-btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -122,7 +117,6 @@
   border-color: rgba(255,255,255,0.5);
   transform: translateY(-2px);
 }
-
 /* ── Feature section ─────────────────────────────────── */
 .feature-section {
   padding: 4.5rem 2.5rem;
@@ -130,7 +124,6 @@
   margin: 0 auto;
   width: 100%;
 }
-
 .section-head {
   display: flex;
   align-items: flex-end;
@@ -139,32 +132,36 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
 }
-
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
-
 .feature-card {
   padding: 2rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   animation: fadeUp 0.5s ease both;
 }
-.feature-grid .feature-card:nth-child(1) { animation-delay: 0.05s; }
-.feature-grid .feature-card:nth-child(2) { animation-delay: 0.12s; }
-.feature-grid .feature-card:nth-child(3) { animation-delay: 0.19s; }
-.feature-grid .feature-card:nth-child(4) { animation-delay: 0.26s; }
+.feature-grid .feature-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.feature-grid .feature-card:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.feature-grid .feature-card:nth-child(3) {
+  animation-delay: 0.19s;
+}
+.feature-grid .feature-card:nth-child(4) {
+  animation-delay: 0.26s;
+}
 .feature-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-card-hover, var(--shadow-strong));
 }
-
 .feature-icon {
   font-size: 2rem;
   margin-bottom: 1rem;
 }
-
 /* ── Steps section ───────────────────────────────────── */
 .steps-section {
   max-width: 1200px;
@@ -172,20 +169,17 @@
   width: calc(100% - 5rem);
   padding: 2.5rem;
 }
-
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
   margin-top: 1.5rem;
 }
-
 .step-card {
   display: flex;
   gap: 1.25rem;
   align-items: flex-start;
 }
-
 .step-index {
   width: 42px;
   height: 42px;
@@ -206,7 +200,6 @@
   transform: scale(1.12);
   box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
 }
-
 /* ── CTA section ─────────────────────────────────────── */
 .cta-section {
   padding: 0 2.5rem 4rem;
@@ -214,7 +207,6 @@
   margin: 0 auto;
   width: 100%;
 }
-
 .cta-card {
   display: flex;
   align-items: center;
@@ -225,22 +217,23 @@
   background: linear-gradient(135deg, var(--green-600) 0%, var(--green-500) 100%) !important;
   border: none;
 }
-
 .cta-card p,
 .cta-card h2,
 .cta-card .eyebrow,
 .cta-card .muted {
   color: rgba(255, 255, 255, 0.92) !important;
 }
-.cta-card h2 { color: #fff !important; }
-.cta-card .eyebrow { color: rgba(255, 255, 255, 0.7) !important; }
-
+.cta-card h2 {
+  color: #fff !important;
+}
+.cta-card .eyebrow {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
 .cta-actions {
   display: flex;
   gap: 0.85rem;
   flex-wrap: wrap;
 }
-
 .cta-card .btn-primary {
   background: #fff;
   color: var(--green-700);
@@ -257,10 +250,18 @@
   background: rgba(255,255,255,0.15);
   border-color: #fff;
 }
-
 @media (max-width: 768px) {
-  .steps-section { width: calc(100% - 2rem); }
-  .hero-inner { padding: 3.5rem 1.5rem; }
-  .cta-card { padding: 2rem 1.5rem; }
-  .feature-section, .cta-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .steps-section {
+  width: calc(100% - 2rem);
+}
+  .hero-inner {
+  padding: 3.5rem 1.5rem;
+}
+  .cta-card {
+  padding: 2rem 1.5rem;
+}
+  .feature-section, .cta-section {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
 }

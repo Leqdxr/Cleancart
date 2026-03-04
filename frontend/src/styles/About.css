@@ -3,12 +3,10 @@
   padding: 4rem 2rem;
   background: var(--bg);
 }
-
 .about-content {
   max-width: 1000px;
   margin: 0 auto;
 }
-
 .about-content h1 {
   font-size: 3rem;
   color: var(--green-700);
@@ -16,7 +14,6 @@
   margin-bottom: 2rem;
   font-weight: 800;
 }
-
 .about-intro {
   background: var(--card);
   padding: 3rem;
@@ -24,7 +21,6 @@
   box-shadow: 0 5px 20px rgba(79, 70, 229, 0.08);
   margin-bottom: 3rem;
 }
-
 .intro-text {
   font-size: 1.25rem;
   color: var(--muted);
@@ -32,7 +28,6 @@
   text-align: center;
   margin: 0;
 }
-
 .about-section {
   background: var(--card);
   padding: 3rem;
@@ -40,7 +35,6 @@
   box-shadow: 0 5px 20px rgba(79, 70, 229, 0.06);
   margin-bottom: 2rem;
 }
-
 .about-section h2 {
   font-size: 2rem;
   color: var(--green-700);
@@ -48,13 +42,11 @@
   font-weight: 700;
   text-align: center;
 }
-
 .about-features {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
-
 .about-feature {
   display: flex;
   gap: 2rem;
@@ -65,12 +57,10 @@
   border: 1px solid var(--border);
   transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .about-feature:hover {
   transform: translateX(5px);
   box-shadow: 0 5px 15px rgba(79, 70, 229, 0.1);
 }
-
 .feature-number {
   background: linear-gradient(135deg, var(--green-600) 0%, var(--green-500) 100%);
   color: white;
@@ -84,21 +74,18 @@
   font-weight: 700;
   flex-shrink: 0;
 }
-
 .feature-text h3 {
   font-size: 1.5rem;
   color: var(--ink);
   margin-bottom: 0.5rem;
   font-weight: 700;
 }
-
 .feature-text p {
   color: var(--muted);
   line-height: 1.6;
   font-size: 1rem;
   margin: 0;
 }
-
 .mission-text {
   font-size: 1.1rem;
   color: var(--muted);
@@ -106,14 +93,12 @@
   text-align: center;
   margin: 0;
 }
-
 .values-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
 }
-
 .value-card {
   text-align: center;
   padding: 2rem;
@@ -122,47 +107,39 @@
   border: 1px solid var(--border);
   transition: transform 0.3s, box-shadow 0.3s;
 }
-
 .value-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);
 }
-
 .value-card h3 {
   font-size: 1.5rem;
   color: var(--green-700);
   margin-bottom: 1rem;
   font-weight: 700;
 }
-
 .value-card p {
   color: var(--muted);
   line-height: 1.6;
   font-size: 1rem;
   margin: 0;
 }
-
 @media (max-width: 768px) {
   .about-content h1 {
-    font-size: 2.5rem;
-  }
-
+  font-size: 2.5rem;
+}
   .about-intro,
   .about-section {
-    padding: 2rem 1.5rem;
-  }
-
+  padding: 2rem 1.5rem;
+}
   .about-feature {
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-  }
-
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
   .feature-number {
-    margin-bottom: 1rem;
-  }
-
+  margin-bottom: 1rem;
+}
   .about-section h2 {
-    font-size: 1.75rem;
-  }
+  font-size: 1.75rem;
+}
 }
