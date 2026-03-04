@@ -26,6 +26,21 @@ export default function ProductDetail() {
 
   const product = products.find((p) => p.id === id);
 
+  // Compute store list early (safe if product is null) so hooks run unconditionally
+  const availableStores = Object.entries(product?.stores || {})
+    .filter(([, data]) => data.available)
+    .map(([sid, data]) => {
+      const storeMeta = STORES.find((s) => s.id === sid) || { name: sid };
+      return { id: sid, meta: storeMeta, ...data };
+    });
+  const recommendedStore = availableStores.length
+    ? availableStores.reduce((best, s) => (Number(s.rating || 0) > Number(best.rating || 0) ? s : best))
+    : null;
+  const cheapestStore = availableStores.length
+    ? availableStores.reduce((low, s) => (Number(s.price || 0) < Number(low.price || 0) ? s : low))
+    : null;
+  const maxPrice = availableStores.length ? Math.max(...availableStores.map((s) => Number(s.price || 0))) : 0;
+
   /* ── Modal state ── */
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
@@ -41,9 +56,10 @@ export default function ProductDetail() {
   const [success, setSuccess] = useState(false);
   const [err, setErr] = useState("");
 
+  // Reset modal state when opened; auto-select recommended store
   useEffect(() => {
     if (open) {
-      setStep(0); setSelectedStore(null);
+      setStep(0); setSelectedStore(recommendedStore || null);
       setAddr({ name: user?.name || "", email: user?.email || "", phone: "", address: "", city: "", zip: "" });
       setSuccess(false); setErr("");
     }
@@ -72,13 +88,6 @@ export default function ProductDetail() {
       </div>
     );
   }
-
-  const availableStores = Object.entries(product.stores || {})
-    .filter(([, data]) => data.available)
-    .map(([sid, data]) => {
-      const storeMeta = STORES.find((s) => s.id === sid) || { name: sid };
-      return { id: sid, meta: storeMeta, ...data };
-    });
 
   /* ── Address helpers ── */
   const addrFilled = addr.name && addr.email && addr.phone && addr.address && addr.city && addr.zip;
@@ -131,22 +140,68 @@ export default function ProductDetail() {
             <p className="muted">This product is not available in any store yet.</p>
           )}
 
-          <div className="pd-stores-list">
-            {availableStores.map((store) => (
-              <div key={store.id} className="pd-store-card card">
-                <div className="pd-store-top">
-                  <div>
-                    <h3 className="pd-store-name">{store.meta.name}</h3>
-                    <StarRating value={store.rating} />
-                  </div>
-                  <span className="pd-store-price">${Number(store.price).toFixed(2)}</span>
-                </div>
-                <div className="pd-store-meta">
-                  <span>📦 Stock: <strong>{store.stock}</strong></span>
-                  <span>🚚 Delivery: <strong>${Number(store.deliveryCost).toFixed(2)}</strong></span>
-                </div>
+          {/* ── Price comparison table ── */}
+          {availableStores.length > 1 && (
+            <div className="price-comparison-banner">
+              <div className="pcb-header">
+                <span className="pcb-title">📊 Price Comparison</span>
+                {recommendedStore && (
+                  <span className="pcb-rec-label">We recommend: <strong>{recommendedStore.meta.name}</strong> ⭐</span>
+                )}
               </div>
-            ))}
+              <div className="pcb-rows">
+                {[...availableStores].sort((a, b) => Number(a.price) - Number(b.price)).map((store) => {
+                  const isRec = store.id === recommendedStore?.id;
+                  const isCheap = store.id === cheapestStore?.id;
+                  const saving = maxPrice - Number(store.price || 0);
+                  const barPct = maxPrice > 0 ? Math.round((Number(store.price) / maxPrice) * 100) : 100;
+                  return (
+                    <div key={store.id} className={`pcb-row ${isRec ? "pcb-row-rec" : ""}`}>
+                      <div className="pcb-store-name">
+                        {store.meta.name}
+                        {isRec && <span className="pcb-badge pcb-badge-rec">⭐ Recommended</span>}
+                        {isCheap && !isRec && <span className="pcb-badge pcb-badge-cheap">💰 Cheapest</span>}
+                      </div>
+                      <div className="pcb-bar-wrap">
+                        <div className="pcb-bar" style={{ width: `${barPct}%`, background: isRec ? "var(--green)" : "var(--border)" }} />
+                      </div>
+                      <div className="pcb-price-info">
+                        <span className="pcb-price">${Number(store.price).toFixed(2)}</span>
+                        {saving > 0.01 && <span className="pcb-saving">Save ${saving.toFixed(2)}</span>}
+                      </div>
+                      <StarRating value={store.rating} />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="pd-stores-list">
+            {availableStores.map((store) => {
+              const isRec = store.id === recommendedStore?.id;
+              const isCheap = store.id === cheapestStore?.id && store.id !== recommendedStore?.id;
+              return (
+                <div key={store.id} className={`pd-store-card card ${isRec ? "pd-store-recommended" : ""}`}>
+                  <div className="pd-store-top">
+                    <div>
+                      <div className="pd-store-name-row">
+                        <h3 className="pd-store-name">{store.meta.name}</h3>
+                        {isRec && <span className="pd-rec-badge">⭐ Recommended</span>}
+                        {isCheap && <span className="pd-cheap-badge">💰 Best Price</span>}
+                      </div>
+                      <StarRating value={store.rating} />
+                    </div>
+                    <span className="pd-store-price">${Number(store.price).toFixed(2)}</span>
+                  </div>
+                  <div className="pd-store-meta">
+                    <span>📦 Stock: <strong>{store.stock}</strong></span>
+                    <span>🚚 Delivery: <strong>${Number(store.deliveryCost).toFixed(2)}</strong></span>
+                    <span>Total: <strong className="pd-total-price">${(Number(store.price) + Number(store.deliveryCost)).toFixed(2)}</strong></span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {availableStores.length > 0 && (
@@ -185,27 +240,35 @@ export default function ProductDetail() {
                   <div className="modal-step">
                     <h3>Select a store</h3>
                     <div className="store-options">
-                      {availableStores.map((store) => (
-                        <div
-                          key={store.id}
-                          className={`store-option card ${selectedStore?.id === store.id ? "selected" : ""}`}
-                          onClick={() => setSelectedStore(store)}
-                        >
-                          <div className="so-row">
-                            <div>
-                              <strong>{store.meta.name}</strong>
-                              <StarRating value={store.rating} />
+                      {availableStores.map((store) => {
+                        const isRec = store.id === recommendedStore?.id;
+                        const isCheap = store.id === cheapestStore?.id && store.id !== recommendedStore?.id;
+                        return (
+                          <div
+                            key={store.id}
+                            className={`store-option card ${selectedStore?.id === store.id ? "selected" : ""} ${isRec ? "store-option-rec" : ""}`}
+                            onClick={() => setSelectedStore(store)}
+                          >
+                            <div className="so-row">
+                              <div>
+                                <div className="so-name-row">
+                                  <strong>{store.meta.name}</strong>
+                                  {isRec && <span className="so-badge so-badge-rec">⭐ Rec</span>}
+                                  {isCheap && <span className="so-badge so-badge-cheap">💰</span>}
+                                </div>
+                                <StarRating value={store.rating} />
+                              </div>
+                              <div className="so-right">
+                                <span className="price-value">${Number(store.price).toFixed(2)}</span>
+                                <span className="muted">+${Number(store.deliveryCost).toFixed(2)} delivery</span>
+                              </div>
                             </div>
-                            <div className="so-right">
-                              <span className="price-value">${Number(store.price).toFixed(2)}</span>
-                              <span className="muted">+${Number(store.deliveryCost).toFixed(2)} delivery</span>
-                            </div>
+                            <p className="muted" style={{fontSize:'0.78rem',margin:'4px 0 0'}}>
+                              {store.stock} in stock
+                            </p>
                           </div>
-                          <p className="muted" style={{fontSize:'0.78rem',margin:'4px 0 0'}}>
-                            {store.stock} in stock
-                          </p>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                     <div className="modal-actions">
                       <button className="btn btn-outline" onClick={() => setOpen(false)}>Cancel</button>

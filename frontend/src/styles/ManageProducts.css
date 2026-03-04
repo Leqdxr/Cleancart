@@ -62,7 +62,7 @@
 .sf-field input:focus { border-color: var(--green); }
 .btn { padding: 0.65rem 1.5rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: 2px solid transparent; transition: background 0.2s, color 0.2s; }
 .btn-primary { background: var(--green); color: #fff; border-color: var(--green); }
-.btn-primary:hover { background: #218c52; }
+.btn-primary:hover { background: #4338ca; }
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-outline { background: transparent; color: var(--green); border-color: var(--green); }
 .btn-outline:hover { background: var(--green); color: #fff; }

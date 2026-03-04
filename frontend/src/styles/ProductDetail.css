@@ -40,7 +40,7 @@
 .pd-cta { margin-top: 0.5rem; padding: 0.85rem 2rem; font-size: 1rem; border-radius: 10px; width: 100%; }
 .btn { padding: 0.65rem 1.5rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: 2px solid transparent; transition: background 0.2s, color 0.2s; display: inline-block; }
 .btn-primary { background: var(--green); color: #fff; border-color: var(--green); }
-.btn-primary:hover { background: #218c52; }
+.btn-primary:hover { background: #4338ca; }
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-outline { background: transparent; color: var(--green); border-color: var(--green); }
 .btn-outline:hover { background: var(--green); color: #fff; }
@@ -144,3 +144,45 @@
 .success-check { width: 64px; height: 64px; border-radius: 50%; background: var(--green); color: #fff; font-size: 2rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 @keyframes popIn { from { transform: scale(0); opacity:0 } to { transform: scale(1); opacity:1 } }
 .order-success h2 { font-size: 1.5rem; font-weight: 700; color: var(--ink); margin: 0 0 0.5rem; }
+
+/* ────────────── PRICE COMPARISON ────────────── */
+.price-comparison-banner {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--green) 6%, var(--card)), var(--card));
+  border: 1.5px solid color-mix(in srgb, var(--green) 25%, var(--border));
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  margin: 0.25rem 0;
+  animation: fadeSlideIn 0.4s ease both;
+}
+.pcb-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
+.pcb-title { font-size: 0.88rem; font-weight: 700; color: var(--ink); }
+.pcb-rec-label { font-size: 0.8rem; color: var(--green); font-weight: 600; }
+.pcb-rows { display: flex; flex-direction: column; gap: 0.55rem; }
+.pcb-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 9px; transition: background 0.2s; }
+.pcb-row:hover { background: color-mix(in srgb, var(--green) 5%, var(--card)); }
+.pcb-row-rec { background: color-mix(in srgb, var(--green) 8%, var(--card)); border: 1px solid color-mix(in srgb, var(--green) 30%, var(--border)); }
+.pcb-store-name { min-width: 90px; font-size: 0.85rem; font-weight: 700; color: var(--ink); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.pcb-badge { font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 999px; white-space: nowrap; }
+.pcb-badge-rec { background: color-mix(in srgb, var(--green) 18%, var(--card)); color: var(--green); border: 1px solid var(--green); }
+.pcb-badge-cheap { background: color-mix(in srgb, #f6ad55 18%, var(--card)); color: #c07b1a; border: 1px solid #f6ad55; }
+.pcb-bar-wrap { flex: 1; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; min-width: 40px; }
+.pcb-bar { height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+.pcb-price-info { display: flex; flex-direction: column; align-items: flex-end; min-width: 70px; }
+.pcb-price { font-size: 0.9rem; font-weight: 800; color: var(--ink); }
+.pcb-saving { font-size: 0.68rem; color: var(--green); font-weight: 700; }
+
+/* Store cards - recommended highlight */
+.pd-store-recommended { border-color: var(--green) !important; background: color-mix(in srgb, var(--green) 5%, var(--card)); }
+.pd-store-name-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.15rem; }
+.pd-rec-badge { font-size: 0.68rem; font-weight: 700; background: var(--green); color: #fff; padding: 2px 8px; border-radius: 999px; }
+.pd-cheap-badge { font-size: 0.68rem; font-weight: 700; background: #f6ad55; color: #6b4a00; padding: 2px 8px; border-radius: 999px; }
+.pd-total-price { color: var(--green); }
+
+/* Modal store option badges */
+.so-name-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.15rem; }
+.so-badge { font-size: 0.62rem; font-weight: 700; padding: 1px 5px; border-radius: 999px; white-space: nowrap; }
+.so-badge-rec { background: var(--green); color: #fff; }
+.so-badge-cheap { background: #f6ad55; color: #6b4a00; }
+.store-option-rec { border-color: var(--green) !important; }
+
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

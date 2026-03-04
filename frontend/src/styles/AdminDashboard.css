@@ -8,7 +8,9 @@
 .ql-btn { text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; border: 1.5px solid var(--border); color: var(--ink); transition: background 0.2s, border-color 0.2s; white-space: nowrap; }
 .ql-btn:hover { border-color: var(--green); color: var(--green); }
 .ql-primary { background: var(--green); border-color: var(--green); color: #fff; }
-.ql-primary:hover { background: #218c52; color: #fff; }
+.ql-primary:hover { background: #4338ca; color: #fff; }
+.ql-notif { background: #667eea; border-color: #667eea; color: #fff; cursor: pointer; }
+.ql-notif:hover { background: #5a67d8; border-color: #5a67d8; color: #fff; }
 .astats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
 @media (max-width: 700px) { .astats-grid { grid-template-columns: 1fr 1fr; } }
 .astat-card { display: flex; align-items: center; gap: 0.9rem; padding: 1.2rem 1.3rem; border-radius: 14px; transition: transform 0.2s, box-shadow 0.2s; }
@@ -61,3 +63,50 @@
 .dl { color: var(--muted); font-weight: 500; min-width: 130px; }
 .dv { color: var(--ink); font-weight: 600; }
 .adetail-total { color: var(--green); font-size: 1rem; }
+
+/* ── New admin order styles ── */
+.aorder-customer { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+.aorder-address { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 320px; }
+
+/* Delete button in order right column */
+.aorder-delete-btn {
+  background: none;
+  border: 1.5px solid #fed7d7;
+  color: #e53e3e;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.aorder-delete-btn:hover { background: #e53e3e; color: #fff; border-color: #e53e3e; }
+
+/* Delete confirm modal */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 1rem; animation: afdIn 0.18s ease; }
+@keyframes afdIn { from { opacity: 0; } to { opacity: 1; } }
+.confirm-modal { max-width: 440px; width: 100%; padding: 2rem; border-radius: 16px; animation: aSlideUp 0.22s ease; }
+@keyframes aSlideUp { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.confirm-modal h3 { font-size: 1.15rem; font-weight: 700; color: var(--ink); margin: 0 0 0.6rem; }
+.confirm-modal p { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.5rem; }
+.confirm-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+.btn { padding: 0.65rem 1.3rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; text-decoration: none; border: 2px solid transparent; transition: background 0.2s, color 0.2s; display: inline-block; }
+.btn-outline { background: transparent; color: var(--green); border-color: var(--green); }
+.btn-outline:hover { background: var(--green); color: #fff; }
+.btn-danger { background: #e53e3e; color: #fff; border: 2px solid #e53e3e; border-radius: 8px; padding: 0.6rem 1.3rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.btn-danger:hover { background: #c53030; }
+
+/* Animations */
+@keyframes afadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.adash-hero { animation: afadeUp 0.4s ease both; }
+.astat-card { animation: afadeUp 0.4s ease both; }
+.astats-grid .astat-card:nth-child(1) { animation-delay: 0.05s; }
+.astats-grid .astat-card:nth-child(2) { animation-delay: 0.10s; }
+.astats-grid .astat-card:nth-child(3) { animation-delay: 0.15s; }
+.astats-grid .astat-card:nth-child(4) { animation-delay: 0.20s; }
+.astats-grid .astat-card:nth-child(5) { animation-delay: 0.25s; }
+.aorder-card { animation: afadeUp 0.35s ease both; }

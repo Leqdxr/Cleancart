@@ -11,7 +11,7 @@ function Homepage() {
         <div className="hero-bg-image" style={{ backgroundImage: "url('/images/homepage.jpg')" }} />
         <div className="hero-overlay" />
         <div className="hero-inner">
-          <div className="pill hero-pill">âœ¦ Compare smarter</div>
+          <div className="pill hero-pill">✦ Compare smarter</div>
           <h1>
             Price your desk setup<br />before you buy.
             <span className="hero-highlight"> One cart. Every store.</span>

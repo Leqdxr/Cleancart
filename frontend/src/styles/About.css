@@ -1,7 +1,7 @@
 .about-container {
   min-height: calc(100vh - 80px);
   padding: 4rem 2rem;
-  background: #f7faf7;
+  background: var(--bg);
 }
 
 .about-content {
@@ -11,39 +11,39 @@
 
 .about-content h1 {
   font-size: 3rem;
-  color: #0f7b3d;
+  color: var(--green-700);
   text-align: center;
   margin-bottom: 2rem;
   font-weight: 800;
 }
 
 .about-intro {
-  background: white;
+  background: var(--card);
   padding: 3rem;
   border-radius: 14px;
-  box-shadow: 0 5px 20px rgba(15, 123, 61, 0.1);
+  box-shadow: 0 5px 20px rgba(79, 70, 229, 0.08);
   margin-bottom: 3rem;
 }
 
 .intro-text {
   font-size: 1.25rem;
-  color: #374151;
+  color: var(--muted);
   line-height: 1.8;
   text-align: center;
   margin: 0;
 }
 
 .about-section {
-  background: white;
+  background: var(--card);
   padding: 3rem;
   border-radius: 14px;
-  box-shadow: 0 5px 20px rgba(15, 123, 61, 0.08);
+  box-shadow: 0 5px 20px rgba(79, 70, 229, 0.06);
   margin-bottom: 2rem;
 }
 
 .about-section h2 {
   font-size: 2rem;
-  color: #0f7b3d;
+  color: var(--green-700);
   margin-bottom: 2rem;
   font-weight: 700;
   text-align: center;
@@ -60,19 +60,19 @@
   gap: 2rem;
   align-items: flex-start;
   padding: 1.5rem;
-  background: #f9fbf9;
+  background: var(--bg);
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .about-feature:hover {
   transform: translateX(5px);
-  box-shadow: 0 5px 15px rgba(15, 123, 61, 0.12);
+  box-shadow: 0 5px 15px rgba(79, 70, 229, 0.1);
 }
 
 .feature-number {
-  background: linear-gradient(135deg, #13a758 0%, #20c868 100%);
+  background: linear-gradient(135deg, var(--green-600) 0%, var(--green-500) 100%);
   color: white;
   width: 3rem;
   height: 3rem;
@@ -87,13 +87,13 @@
 
 .feature-text h3 {
   font-size: 1.5rem;
-  color: #111827;
+  color: var(--ink);
   margin-bottom: 0.5rem;
   font-weight: 700;
 }
 
 .feature-text p {
-  color: #4b5563;
+  color: var(--muted);
   line-height: 1.6;
   font-size: 1rem;
   margin: 0;
@@ -101,7 +101,7 @@
 
 .mission-text {
   font-size: 1.1rem;
-  color: #374151;
+  color: var(--muted);
   line-height: 1.8;
   text-align: center;
   margin: 0;
@@ -117,26 +117,26 @@
 .value-card {
   text-align: center;
   padding: 2rem;
-  background: #f9fbf9;
+  background: var(--bg);
   border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .value-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(15, 123, 61, 0.12);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);
 }
 
 .value-card h3 {
   font-size: 1.5rem;
-  color: #0f7b3d;
+  color: var(--green-700);
   margin-bottom: 1rem;
   font-weight: 700;
 }
 
 .value-card p {
-  color: #4b5563;
+  color: var(--muted);
   line-height: 1.6;
   font-size: 1rem;
   margin: 0;

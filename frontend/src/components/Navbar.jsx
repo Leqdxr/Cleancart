@@ -1,13 +1,33 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useNotifications } from '../context/NotificationContext';
 import '../styles/Navbar.css';
 
 function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { getNotificationsForUser, getUnreadCount, markAsRead, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+  const notifRef = useRef(null);
+
+  const userNotifs = isAuthenticated ? getNotificationsForUser(user?.id, user?.email) : [];
+  const unreadCount = isAuthenticated ? getUnreadCount(user?.id, user?.email) : 0;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setShowNotifDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -40,7 +60,7 @@ function Navbar() {
             <li className={`navbar-item ${location.pathname === '/about' ? 'active' : ''}`}>
               <Link to="/about" className="navbar-link">About</Link>
             </li>
-            {isAuthenticated && (
+            {isAuthenticated && !isAdmin && (
               <li className={`navbar-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
                 <Link to="/dashboard" className="navbar-link">Dashboard</Link>
               </li>
@@ -80,6 +100,57 @@ function Navbar() {
 
             {isAuthenticated ? (
               <>
+                {/* Notification Bell */}
+                <div className="notif-wrapper" ref={notifRef}>
+                  <button
+                    className="notif-bell-btn"
+                    onClick={() => setShowNotifDropdown((v) => !v)}
+                    title="Notifications"
+                    aria-label="Notifications"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    {unreadCount > 0 && <span className="notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                  </button>
+
+                  {showNotifDropdown && (
+                    <div className="notif-dropdown">
+                      <div className="notif-dropdown-header">
+                        <span className="notif-dropdown-title">Notifications</span>
+                        {unreadCount > 0 && (
+                          <button className="notif-mark-all" onClick={() => markAllAsRead(user?.id, user?.email)}>
+                            Mark all read
+                          </button>
+                        )}
+                      </div>
+                      <div className="notif-dropdown-list">
+                        {userNotifs.length === 0 ? (
+                          <div className="notif-empty">No notifications yet</div>
+                        ) : (
+                          userNotifs.slice(0, 20).map((notif) => (
+                            <div
+                              key={notif.id}
+                              className={`notif-item ${notif.read ? '' : 'notif-unread'}`}
+                              onClick={() => markAsRead(notif.id)}
+                            >
+                              <span className="notif-item-icon">{notif.icon}</span>
+                              <div className="notif-item-body">
+                                <span className="notif-item-title">{notif.title}</span>
+                                <span className="notif-item-msg">{notif.message}</span>
+                                <span className="notif-item-time">
+                                  {new Date(notif.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                 <button type="button" className="navbar-user" onClick={handleProfileClick}>
                   {avatar ? (
                     <img src={avatar} alt="Profile" className="user-avatar" />

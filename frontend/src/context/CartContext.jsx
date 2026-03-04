@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+﻿import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import { stores } from '../data/catalog';
 
 const CartContext = createContext();
@@ -110,9 +110,28 @@ export const CartProvider = ({ children }) => {
       return { ...product, quantity: entry.quantity };
     });
 
+    const totalQty = enrichedItems.reduce((s, i) => s + (i.quantity || 1), 0);
+    const displayName = enrichedItems.length === 1
+      ? enrichedItems[0]?.name
+      : `${enrichedItems.length} items`;
+
     const order = {
       id: `ORD-${Date.now()}`,
-      placedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      userId: user?.id,
+      userEmail: user?.email,
+      userName: user?.name,
+      productId: enrichedItems[0]?.id || null,
+      productName: displayName,
+      storeId: chosenStore?.id || null,
+      quantity: totalQty,
+      price: chosenStore?.total ? (chosenStore.total - (chosenStore.deliveryFee || 0)) / Math.max(totalQty, 1) : 0,
+      total: chosenStore?.total || 0,
+      address,
+      paymentMethod: paymentMethod || 'cod',
+      paymentNote: paymentNote || '',
+      status: 'pending',
+      // Legacy / expanded fields
       customer: user?.name || 'Guest',
       customerEmail: user?.email || '-',
       items: enrichedItems,
@@ -123,10 +142,6 @@ export const CartProvider = ({ children }) => {
       selectedStoreName: chosenStore?.name || null,
       selectedStoreTotal: chosenStore?.total || null,
       selectedStoreDelivery: chosenStore?.deliveryFee || null,
-      paymentMethod: paymentMethod || 'cod',
-      paymentNote: paymentNote || '',
-      address,
-      status: 'Pending',
     };
 
     setOrders((prev) => [order, ...prev]);
@@ -148,7 +163,20 @@ export const CartProvider = ({ children }) => {
 
     const order = {
       id: `ORD-${Date.now()}`,
-      placedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      userId: user?.id,
+      userEmail: user?.email,
+      userName: user?.name,
+      productId: product.id,
+      productName: product.name,
+      storeId,
+      quantity,
+      price: storeData.price,
+      total: orderTotal,
+      address,
+      paymentMethod: paymentMethod || 'cod',
+      status: 'pending',
+      // Legacy / expanded fields
       customer: user?.name || 'Guest',
       customerEmail: user?.email || '-',
       items: [{ ...product, quantity, price: storeData.price }],
@@ -156,10 +184,7 @@ export const CartProvider = ({ children }) => {
       selectedStoreName: store.name,
       selectedStoreTotal: orderTotal,
       selectedStoreDelivery: deliveryCost,
-      paymentMethod: paymentMethod || 'cod',
       paymentNote: '',
-      address,
-      status: 'Pending',
     };
 
     setOrders((prev) => [order, ...prev]);
@@ -167,9 +192,12 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateOrderStatus = (orderId, nextStatus) => {
+    const order = orders.find((o) => o.id === orderId);
     setOrders((prev) =>
       prev.map((o) => o.id === orderId ? { ...o, status: nextStatus } : o)
     );
+    // Return the order so callers can trigger notifications
+    return order;
   };
 
   const deleteOrder = (orderId) => {

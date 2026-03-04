@@ -203,7 +203,7 @@
   outline: none;
   border-color: var(--green);
   background: var(--input-bg, var(--card));
-  box-shadow: 0 0 0 3px rgba(19, 167, 88, 0.1);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 .field-note {
