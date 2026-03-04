@@ -1,4 +1,19 @@
-﻿import { useState, useMemo } from "react";
+﻿/**
+ * Admin Dashboard Component
+ *
+ * Protected admin-only page for managing all orders
+ * Features:
+ * - Order stats cards (Total / Pending / Processing / Delivered / Revenue)
+ * - Quick links to manage Users and Products
+ * - Broadcast notification form for sending to all users
+ * - Searchable and filterable order list
+ * - Order status update dropdown with notification triggers
+ * - Expandable order detail view
+ * - Delete order with confirmation modal
+ * - Customer info display (name, email, address)
+ */
+
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -6,8 +21,11 @@ import { useNotifications } from "../context/NotificationContext";
 import { stores as STORES } from "../data/catalog";
 import "../styles/AdminDashboard.css";
 
+// Color map for order status badges
 const STATUS_COLORS = { pending: "#f6ad55", processing: "#63b3ed", shipped: "#68d391", delivered: "#48bb78", cancelled: "#fc8181" };
+// Display labels for order statuses
 const STATUS_LABELS = { pending: "Pending", processing: "Processing", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" };
+// All possible order statuses for filter and dropdown
 const ALL_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 export default function AdminDashboard() {
@@ -15,13 +33,16 @@ export default function AdminDashboard() {
   const { orders, products, updateOrderStatus, deleteOrder } = useCart();
   const { notifyOrderStatusChange, sendAdminNotification } = useNotifications();
 
-  const [expandedId, setExpandedId] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [search, setSearch] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState(null);
+  // UI state for order expansion, filtering, and search
+  const [expandedId, setExpandedId] = useState(null);      // Expanded order detail ID
+  const [filterStatus, setFilterStatus] = useState("all"); // Status filter tab
+  const [search, setSearch] = useState("");                 // Search query
+  const [deleteTarget, setDeleteTarget] = useState(null);   // Order pending deletion
+  // Broadcast notification form state
   const [showNotifForm, setShowNotifForm] = useState(false);
   const [notifForm, setNotifForm] = useState({ title: '', message: '', type: 'info' });
 
+  // Filter and sort orders by status, search query, and date (newest first)
   const filtered = useMemo(() => {
     let list = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     if (filterStatus !== "all") list = list.filter((o) => o.status === filterStatus);
@@ -32,6 +53,7 @@ export default function AdminDashboard() {
     return list;
   }, [orders, filterStatus, search]);
 
+  // Aggregate statistics for admin stat cards
   const stats = useMemo(() => ({
     total: orders.length,
     pending: orders.filter((o) => o.status === "pending").length,
@@ -40,9 +62,13 @@ export default function AdminDashboard() {
     revenue: orders.filter((o) => ["delivered","completed"].includes(o.status)).reduce((s, o) => s + Number(o.total || o.price || 0), 0),
   }), [orders]);
 
+  /** Look up a product by ID */
   function getProduct(id) { return products.find((p) => p.id === id); }
+  /** Look up a store name by ID */
   function getStoreName(id) { return STORES.find((s) => s.id === id)?.name || id; }
+  /** Show delete confirmation modal for an order */
   function confirmDelete(order) { setDeleteTarget(order); }
+  /** Execute order deletion after confirmation */
   function doDelete() { if (deleteTarget) { deleteOrder(deleteTarget.id); setDeleteTarget(null); } }
 
   return (
