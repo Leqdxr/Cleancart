@@ -60,6 +60,18 @@ const User = sequelize.define('User', {
       len: [6, 100], // Password must be 6-100 characters
       notEmpty: true
     }
+  },
+
+  // Token for password reset (hashed, stored temporarily)
+  resetPasswordToken: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+
+  // Expiry timestamp for password reset token
+  resetPasswordExpires: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
   tableName: 'users', // Database table name
