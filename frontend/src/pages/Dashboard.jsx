@@ -1,23 +1,45 @@
-﻿import { useState, useMemo } from "react";
+﻿/**
+ * User Dashboard Component
+ *
+ * Protected page displaying user's order history and activity
+ * Features:
+ * - Greeting header with shop link
+ * - Stat cards (Total / Pending / In Transit / Delivered)
+ * - Cart summary with product count
+ * - Filterable active orders list with expandable details
+ * - Completed (delivered) orders section (collapsible)
+ * - Delete order with confirmation modal
+ * - Status badges with color coding
+ */
+
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { stores as STORES } from "../data/catalog";
 import "../styles/Dashboard.css";
 
+// Color map for order status badges
 const STATUS_COLORS = { pending: "#f6ad55", processing: "#63b3ed", shipped: "#68d391", delivered: "#48bb78", cancelled: "#fc8181" };
+// Display labels for order statuses
 const STATUS_LABELS = { pending: "Pending", processing: "Processing", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" };
+// All possible order statuses
 const ALL_STATUSES = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { orders, cart, products, deleteOrder } = useCart();
 
+  // Expanded order detail view state
   const [expandedId, setExpandedId] = useState(null);
+  // Order status filter
   const [filterStatus, setFilterStatus] = useState("all");
+  // Delete confirmation target
   const [deleteTarget, setDeleteTarget] = useState(null);
+  // Toggle completed orders section visibility
   const [showCompleted, setShowCompleted] = useState(false);
 
+  // Filter orders belonging to the current user, sorted newest first
   const userOrders = useMemo(
     () => orders
       .filter((o) =>
@@ -29,13 +51,15 @@ export default function Dashboard() {
     [orders, user]
   );
 
-  // Split into active and completed orders
+  // Active (non-delivered) and completed (delivered) order separation
   const activeOrders = useMemo(() => userOrders.filter((o) => (o.status || '').toLowerCase() !== 'delivered'), [userOrders]);
   const completedOrders = useMemo(() => userOrders.filter((o) => (o.status || '').toLowerCase() === 'delivered'), [userOrders]);
 
+  // Filter tabs for active orders (excluding 'delivered' since it has its own section)
   const ACTIVE_STATUSES = ["pending", "processing", "shipped", "cancelled"];
   const filtered = filterStatus === "all" ? activeOrders : activeOrders.filter((o) => (o.status || "").toLowerCase() === filterStatus);
 
+  // Aggregate stats for stat cards
   const stats = useMemo(() => ({
     total: userOrders.length,
     pending: userOrders.filter((o) => ["pending","Pending"].includes(o.status)).length,
@@ -43,9 +67,13 @@ export default function Dashboard() {
     delivered: userOrders.filter((o) => (o.status||"").toLowerCase() === "delivered").length,
   }), [userOrders]);
 
+  /** Look up a product by ID from the products catalog */
   function getProduct(id) { return products.find((p) => p.id === id); }
+  /** Look up a store name by ID from the stores list */
   function getStoreName(id) { return STORES.find((s) => s.id === id)?.name || id; }
+  /** Show delete confirmation modal for an order */
   function confirmDelete(order) { setDeleteTarget(order); }
+  /** Execute order deletion after confirmation */
   function doDelete() { if (deleteTarget) { deleteOrder(deleteTarget.id); setDeleteTarget(null); } }
 
   return (
