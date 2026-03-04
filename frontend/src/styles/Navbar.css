@@ -1,16 +1,22 @@
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 20;
-  backdrop-filter: blur(14px);
-  background: rgba(255, 255, 255, 0.9);
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(var(--navbar-bg, 255,255,255), 0.85);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(17, 21, 32, 0.88);
 }
 
 .navbar-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 0.85rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,18 +31,16 @@
   font-size: 1.35rem;
   letter-spacing: -0.02em;
   color: var(--ink);
+  transition: opacity 0.2s;
 }
+.navbar-logo:hover { opacity: 0.85; }
 
-.logo-mark {
-  width: 34px;
-  height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.logo-img {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  object-fit: contain;
   border-radius: 10px;
-  background: linear-gradient(135deg, var(--green-600), var(--green-500));
-  color: #fff;
-  font-size: 1rem;
 }
 
 .navbar-actions {
@@ -48,7 +52,7 @@
 .navbar-menu {
   list-style: none;
   display: flex;
-  gap: 1.25rem;
+  gap: 0.25rem;
   padding: 0;
   margin: 0;
 }
@@ -58,24 +62,28 @@
 }
 
 .navbar-link {
-  padding: 0.6rem 0.35rem;
+  padding: 0.6rem 0.75rem;
   font-weight: 600;
   color: var(--muted);
   transition: color 0.2s ease;
+  border-radius: 8px;
+  display: block;
 }
 
 .navbar-item.active .navbar-link,
 .navbar-link:hover {
-  color: var(--green-700);
+  color: var(--green-600);
+  background: var(--green-100);
 }
 
 .navbar-item.active::after {
   content: '';
   position: absolute;
-  left: 0;
-  bottom: -0.15rem;
-  width: 100%;
-  height: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -0.85rem;
+  width: 60%;
+  height: 2.5px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--green-600), var(--green-500));
 }
@@ -86,11 +94,34 @@
   gap: 0.65rem;
 }
 
+/* ── Theme Toggle ─────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--green-100);
+  border-color: var(--green-600);
+  color: var(--green-600);
+  transform: rotate(20deg) scale(1.1);
+}
+
+/* ── User button ─────────────────────── */
 .navbar-user {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.55rem 0.9rem;
+  padding: 0.5rem 0.9rem;
   background: var(--green-100);
   border-radius: 12px;
   color: var(--green-700);
@@ -98,7 +129,6 @@
   border: 1px solid rgba(19, 167, 88, 0.2);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.2s ease;
-  border: 1px solid rgba(19, 167, 88, 0.2);
 }
 
 .navbar-user:hover {
@@ -106,45 +136,31 @@
   box-shadow: var(--shadow-soft);
 }
 
-.user-icon {
-  font-size: 1.1rem;
-}
+.user-icon { font-size: 1.1rem; }
 
 .user-avatar {
   width: 28px;
   height: 28px;
   min-width: 28px;
-  min-height: 28px;
-  max-width: 28px;
-  max-height: 28px;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  flex-shrink: 0;
-  display: block;
 }
 
-.user-name {
-  letter-spacing: -0.01em;
-}
+.user-name { letter-spacing: -0.01em; }
 
-.logout-btn {
-  color: var(--green-700);
-}
+.logout-btn { color: var(--green-700); }
 
 @media (max-width: 960px) {
   .navbar-container {
     flex-direction: column;
     align-items: stretch;
+    padding: 0.75rem 1.25rem;
   }
-
   .navbar-actions {
     justify-content: space-between;
   }
-
-  .navbar-menu {
-    flex: 1;
-  }
+  .navbar-menu { flex: 1; }
 }
 
 @media (max-width: 640px) {
@@ -152,10 +168,10 @@
     flex-direction: column;
     align-items: flex-start;
   }
-
   .navbar-cta {
     width: 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
   }
 }
+

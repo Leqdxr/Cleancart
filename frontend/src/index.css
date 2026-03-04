@@ -1,19 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
 
+/* ── Light mode (default) ─────────────────────────────── */
 :root {
   --green-700: #0f7b3d;
   --green-600: #13a758;
   --green-500: #20c868;
   --green-100: #e9f7ef;
+  --green: #13a758;
   --charcoal: #111827;
   --ink: #0b1220;
   --muted: #4b5563;
   --border: #e5e7eb;
   --card: #ffffff;
   --bg: #f7faf7;
+  --card-hover: #f0faf3;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
   --shadow-soft: 0 10px 40px rgba(15, 123, 61, 0.08);
   --shadow-strong: 0 14px 60px rgba(15, 123, 61, 0.16);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
   --primary: var(--green-600);
+  --overlay: rgba(0,0,0,0.45);
 
   font-family: 'Inter', 'Poppins', sans-serif;
   line-height: 1.6;
@@ -25,6 +32,28 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Dark mode ────────────────────────────────────────── */
+[data-theme="dark"] {
+  --green-700: #4ade80;
+  --green-600: #22c55e;
+  --green-500: #4ade80;
+  --green-100: rgba(34, 197, 94, 0.12);
+  --green: #22c55e;
+  --charcoal: #e8eaf0;
+  --ink: #f0f2f8;
+  --muted: #9ca3af;
+  --border: #2d3748;
+  --card: #1e2130;
+  --bg: #111520;
+  --card-hover: #252a3d;
+  --input-bg: #1a1f30;
+  --input-border: #374151;
+  --shadow-soft: 0 10px 40px rgba(0,0,0,0.3);
+  --shadow-strong: 0 14px 60px rgba(0,0,0,0.5);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.3);
+  --overlay: rgba(0,0,0,0.7);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -33,10 +62,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: radial-gradient(circle at 10% 20%, rgba(32, 200, 104, 0.08), transparent 25%),
-    radial-gradient(circle at 90% 10%, rgba(19, 167, 88, 0.08), transparent 22%),
-    var(--bg);
+  background: var(--bg);
   color: var(--ink);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -112,6 +140,7 @@ h1, h2, h3 {
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--ink);
 }
 
 h1 {
@@ -140,18 +169,20 @@ p {
   align-items: center;
   gap: 0.35rem;
   padding: 0.35rem 0.75rem;
-  background: #f1f5f9;
+  background: var(--green-100);
   border-radius: 10px;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--green-700);
   border: 1px solid var(--border);
+  font-size: 0.82rem;
 }
 
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .muted {
@@ -166,9 +197,9 @@ p {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 800;
-  color: var(--muted);
-  margin: 0;
-  font-size: 0.85rem;
+  color: var(--green-600);
+  margin: 0 0 0.4rem 0;
+  font-size: 0.82rem;
 }
 
 .label {
