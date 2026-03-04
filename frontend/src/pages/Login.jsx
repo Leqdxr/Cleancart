@@ -1,3 +1,17 @@
+/**
+ * Login Page Component
+ *
+ * User authentication page with:
+ * - Split layout (image panel + form panel)
+ * - Email and password form with validation
+ * - Show/hide password toggle
+ * - Welcome animation overlay on successful login
+ * - Auto-redirect if already authenticated
+ * - Forgot password link
+ * - Server connection error handling
+ * - Redirects admin users to /admin, regular users to /dashboard
+ */
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -5,26 +19,40 @@ import api from '../api/api';
 import '../styles/Login.css';
 
 function Login() {
+  // Form input state
   const [formData, setFormData] = useState({ email: '', password: '' });
+  // Error message from server or validation
   const [error, setError] = useState('');
+  // Loading state during API call
   const [loading, setLoading] = useState(false);
+  // Toggle password visibility
   const [showPassword, setShowPassword] = useState(false);
+  // Welcome overlay animation state
   const [showWelcome, setShowWelcome] = useState(false);
+  // User's name for welcome message
   const [welcomeName, setWelcomeName] = useState('');
+  // Auth context for login function and redirect check
   const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
+  // Redirect already-authenticated users to their dashboard
   useEffect(() => {
     if (isAuthenticated) {
       navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
     }
   }, [isAuthenticated, navigate, user]);
 
+  /** Handle form input changes and clear errors */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
   };
 
+  /**
+   * Handle login form submission
+   * Sends credentials to backend, stores JWT token on success
+   * Shows welcome overlay animation before redirecting
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
